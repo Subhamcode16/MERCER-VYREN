@@ -10,11 +10,11 @@ redis==5.0.3
 # ── Settings & config ─────────────────────────────────────────────────────────
 pydantic-settings==2.4.0
 pydantic[email]==2.8.2
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 
 # ── Auth (Supabase JWT verification) ─────────────────────────────────────────
-PyJWT==2.9.0
-cryptography==43.0.1
+PyJWT==2.15.1
+cryptography==50.0.1
 supabase==2.7.4
 
 # ── AI providers ──────────────────────────────────────────────────────────────
@@ -35,11 +35,10 @@ slowapi==0.1.9
 httpx==0.27.2
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
-python-multipart==0.0.9     # multipart/form-data for image uploads
+python-multipart==0.0.32    # multipart/form-data for image uploads
 
 # ── Generative AI & Environment ───────────────────────────────────────────────
 google-generativeai
-python-dotenv==1.0.1
 
 # ── Telemetry & Observability ─────────────────────────────────────────────────
 opentelemetry-api
@@ -47,5 +46,5 @@ opentelemetry-sdk
 opentelemetry-instrumentation-fastapi
 
 # ── Testing ───────────────────────────────────────────────────────────────────
-pytest==8.3.2
-pytest-asyncio==0.24.0
+pytest==9.1.1
+pytest-asyncio==1.4.0
