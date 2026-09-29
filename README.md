@@ -1,228 +1,43 @@
-<div align="center">
+# VYREN — Brand Intelligence OS
 
-# ❖ VYREN
-### AI-Powered Brand Intelligence & Creative Operating System
+VYREN is a product by ILYREN, envisioned as an AI-assisted operating system for brand intelligence, creative direction, and campaign execution. It is designed to support both creating a brand from the ground up and evolving an existing brand using accumulated context and decisions.
 
-[![Phase 30 Passed](https://img.shields.io/badge/Phase%2030-Institutional%20Intelligence%20Verified-00C853?style=for-the-badge&logo=shield)](https://github.com/Subhamcode16/MERCER-AI)
-[![Tests Passing](https://img.shields.io/badge/Test%20Suite-81%2F81%20Passing-00E676?style=for-the-badge&logo=pytest)](https://github.com/Subhamcode16/MERCER-AI)
-[![Next.js 15](https://img.shields.io/badge/Frontend-Next.js%2015%20App%20Router-000000?style=for-the-badge&logo=next.js)](https://github.com/Subhamcode16/MERCER-AI)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%2B%20Pydantic%20v2-009688?style=for-the-badge&logo=fastapi)](https://github.com/Subhamcode16/MERCER-AI)
-[![License](https://img.shields.io/badge/License-Proprietary-673AB7?style=for-the-badge)](https://github.com/Subhamcode16/MERCER-AI)
+## Current project status
 
-<p align="center">
-  <strong>An intelligent, persistent creative organization for any brand.</strong><br>
-  Establish, understand, design, evaluate, and continuously evolve distinct brand identities and creative campaigns.
-</p>
+The product’s application flow and interface hierarchy have been redesigned. The current UI concept includes a brand workspace, AI-coworker conversations, workforce and group navigation, campaign/task views, a Kanban-style pipeline, and profile/usage settings.
 
-</div>
+**The backend for this redesigned experience has not yet been implemented or connected.** The screenshots and interface elements are design-state evidence only. They do not establish that agent streams, task execution, collaboration, metrics, authentication, persistence, or settings are live or production-ready. In particular, values shown in mockups (such as active task/agent counts, velocity, and compliance rate) are illustrative until verified against a working system.
 
----
+The next architecture work depends on the Grok Bot research notes the project owner plans to provide. Once available, those notes should be reviewed and translated into VYREN-specific requirements and implementation decisions; they are not yet a completed integration or verified design specification.
 
-## ✦ The Core Thesis
+## Product experience in the current redesign
 
-> **Every brand deserves an intelligent creative organization that remembers what it knows, understands why it makes decisions, learns from what happens, and continuously helps it become more distinctive.**
+- **Brand workspace:** choose a workspace and access recent conversations, individual AI coworkers, and groups.
+- **Creative direction and orchestration:** work with a named AI coworker through a conversation-oriented interface.
+- **Brand entry points:** start a new brand, evolve an existing one, open Campaign Studio, or explore Visual DNA and material physics.
+- **Work tracking:** inspect a proposed task pipeline across backlog, plan, in-progress, review, and done stages.
+- **Governance and account settings:** provide places for permissions, profile, usage/computational quotas, and subscription settings.
 
-**VYREN is NOT just an AI image generator or a one-off prompt studio.**  
-VYREN is a persistent, multi-agent creative organization and operating system. It works with founders, creative directors, and marketing teams to build new brands from zero or to ingest, diagnose, and evolve existing enterprises.
+These are intended product surfaces from the redesigned flow. Their presence in the UI does not imply that their underlying services or data flows have been built.
 
-```
-                         ❖ VYREN
-                           │
-             ┌─────────────┴─────────────┐
-             │                           │
-       Brand Intelligence         Creative Intelligence
-             │                           │
-      ┌──────┼──────┐             ┌──────┼──────┐
-      ↓      ↓      ↓             ↓      ↓      ↓
-   Research Strategy Identity   Design Campaign Content
-      │      │      │             │      │      │
-      └──────┴──────┴─────────────┴──────┴──────┘
-                           │
-                           ↓
-                    AI WORKFORCE
-                           │
-                           ↓
-                       OUTCOMES
-                           │
-                           ↓
-                   ORGANIZATIONAL MEMORY
-                           ↺
-```
+## Product principles
 
----
+- Preserve brand context and decisions over time.
+- Make AI-assisted creative work legible and reviewable.
+- Keep human approval and appropriate permissions in the execution path.
+- Treat agent activity, task status, and compliance signals as auditable data—not decorative claims.
+- Separate demonstrated functionality from planned capabilities in documentation and product communication.
 
-## ✦ Dual Brand Modalities
+## Development status and documentation
 
-VYREN is engineered for both types of brand lifecycles:
+The repository contains earlier implementation material and historical architecture/test claims. Those claims may describe a previous baseline and have not been re-verified here as evidence for the redesigned application or its backend. Do not interpret historical test counts, phase labels, security descriptions, or integration statements as validation of the current flow.
 
-### 1. Brands Starting from Zero (0 &rarr; 1)
-For founders launching new ventures without an existing identity:
-```text
-Research ──► Position ──► Define ──► Explore ──► Establish ──► Design ──► Create ──► Launch ──► Learn
-```
-* **Discovery**: Analyzes target market, competitor positioning, and audience psychology.
-* **Identity Formation**: Synthesizes Visual DNA, typography, color physics, voice, and core narratives.
-* **Launch & Iteration**: Generates full omnichannel campaigns, evaluates output, and learns from initial traction.
+See [the project task tracker](docs/PROJECT-TASK-TRACKER.md) for the owner-confirmed completed work and remaining work. The immediate outstanding inputs are the Grok Bot research notes and subsequent backend architecture/integration work.
 
-### 2. Existing Brands (Evolution & Diagnosis)
-For established businesses seeking consistency, repositioning, or campaign excellence:
-```text
-Existing Assets (Web, Packaging, Social, History)
-      ↓
-VYREN Ingestion & Brand DNA Extraction
-      ↓
-Inconsistency & Drift Detection
-      ↓
-Strategic Opportunities & Evolution Proposals
-      ↓
-Human Decision & Governance Gate
-      ↓
-New Creative Systems & Continuous Closed-Loop Learning
-```
+## Repository
 
----
+This repository is the VYREN project workspace. Review the relevant package-level documentation and configuration before running development commands; the repository contains multiple application/subsystem areas, and this README intentionally does not claim that a single quickstart boots a fully integrated product.
 
-## ✦ The 6 Fundamental Product Verbs
+## Status language
 
-VYREN operates as a perpetual, closed-loop creative cycle:
-
-```text
-             ┌─────────────┐
-             │   CREATE    │ ──► Build new brands, identities, campaigns, & creative assets
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │   DECIDE    │ ──► Assist humans with strategic choices via evidence-backed reasoning
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │   DESIGN    │ ──► Synthesize visual systems, concepts, 3D physics, & campaign worlds
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │   LAUNCH    │ ──► Deploy omnichannel creative variations and multi-surface assets
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │    LEARN    │ ──► Ingest market signals, attribution, & counterfactual performance
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │   IMPROVE   │ ──► Apply accumulated institutional memory to elevate future decisions
-             └──────┬──────┘
-                    ▼
-             ┌─────────────┐
-             │   EVOLVE    │ ──► Continuously mature brand distinction over time (never static)
-             └──────┬──────┘
-                    │
-                    └──────────► (Feeds back into CREATE)
-```
-
----
-
-## ✦ System Architecture & Components
-
-Visual DNA, Campaign Studio, and AI Workforce are modular intelligence subsystems within VYREN:
-
-```
-                                  ❖ VYREN OS
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                           STRATEGIC OPERATIONS                           │
-  │     Institutional Intelligence  •  Operating Rooms  •  Cadence Engine     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │                            AI WORKFORCE HUB                              │
-  │     Persistent Personas  •  Collaborative Rooms  •  Governance Gates     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │                        CREATIVE INTELLIGENCE NETWORK                     │
-  │     Visual DNA  •  Textile Physics  •  Lighting Optics  •  Foresight     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │                           CAMPAIGN PRODUCTION                            │
-  │     Omnichannel Projection  •  Asset Linage  •  Attribution Observatory  │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │                           ORGANIZATIONAL MEMORY                          │
-  │      14 Canonical Memory Classes  •  Decision Ledger  •  Audit Proofs    │
-  └──────────────────────────────────────────────────────────────────────────┘
-```
-
-### Core Subsystems
-1. **Brand Intelligence**: Market research, competitive positioning, and consumer sentiment synthesis.
-2. **Visual DNA & Physics**: Material drape simulation, optical lighting, camera geometry, and aesthetic tokens.
-3. **AI Workforce**: Specialized AI coworkers collaborating across Strategic, Creative, Production, and Learning domains.
-4. **Campaign Studio & Digital Turntable**: Real-time asset composition, 360° product exploration, and policy HUDs.
-5. **Outcome & Attribution Observatory**: Closed-loop signal ingestion, counterfactual analysis, and hypothesis promotion.
-6. **Institutional Intelligence (Phase 30)**: Multi-horizon strategic planning ($H_1, H_2, H_3, H_{\text{unknown}}$), Operating Rooms, Cadence Engine, and anti-tamper memory.
-
----
-
-## ✦ Directory Structure
-
-```
-Fashion Knowldge Wiki/
-├── .agents/                               # Multi-agent directives & skills
-├── AGENTS.md                              # Master agent context & ground-truth specification
-├── README.md                              # Product architecture & showcase
-├── start-app.bat                          # One-click startup script for frontend & backend
-│
-├── Visual-Intelligence/                   # Main Full-Stack Application
-│   └── product/
-│       ├── backend/                       # FastAPI backend (81+ passed tests)
-│       │   ├── app/                       # API entrypoints & routers
-│       │   ├── src/                       # Subsystem engines (institutional, security, etc.)
-│       │   ├── tests/                     # Test suites (institutional, security, legacy)
-│       │   ├── docs/                      # Backend specifications (Phases 4–30)
-│       │   └── scripts/                   # Operational utilities
-│       ├── frontend/                      # Next.js 15 App Router & Campaign Studio UI
-│       └── docs/                          # Product Requirements Documents (PRDs)
-│
-├── assets/                                # Static Media & Visual Reference Libraries
-│   ├── reference_libraries/               # Background, Fabric, Lighting, Pose, Visual
-│   ├── fonts/                             # Typography packages
-│   ├── research/                          # Research whitepapers & PDFs
-│   └── recordings/                        # Video records & test footage
-│
-├── docs/                                  # Master Documentation Hub
-│   ├── architecture/                      # Cognitive architectures & system laws
-│   ├── directives/                        # Phase 1–30 engineering directives
-│   ├── knowledge/                         # Glossaries, ontologies & strategies
-│   └── design-notes/                      # Campaign kanban & UI specifications
-│
-├── scripts/                               # Maintenance & graphify utilities
-├── tests/                                 # Central test archives
-└── archive/                               # Deprecated & scratch files
-```
-
----
-
-## ✦ Quickstart & Running Locally
-
-Launch the full-stack VYREN development environment with one command:
-
-```powershell
-.\start-app.bat
-```
-
-This starts:
-* **Backend**: FastAPI running at `http://localhost:8000` with interactive Swagger docs at `http://localhost:8000/docs`.
-* **Frontend**: Next.js 15 Campaign Studio running at `http://localhost:3000`.
-
-### Running Verification Tests
-
-```powershell
-python Visual-Intelligence\product\backend\run_phase30_tests.py
-```
-*Output: `81 passed in ~7.5s` (100% pass rate).*
-
----
-
-## ✦ Security & Tenant Governance
-
-VYREN implements zero-trust multi-tenant isolation:
-* **Tenant Isolation**: Cryptographic tenant boundaries across all decision ledgers and memory stores.
-* **Human-in-the-Loop Governance**: AI workers cannot self-authorize strategic commitments, budget allocations, or memory invalidations without explicit human sign-off.
-* **Zero-Secret Guarantee**: API keys and environment variables are strictly loaded via `.env` and excluded from source control.
-
----
-
-<div align="center">
-  <sub>© 2026 VYREN Intelligence Systems. All rights reserved.</sub>
-</div>
+Use **completed** only for work that has been implemented or explicitly confirmed by the project owner. Use **planned**, **pending**, or **proposed** for work that is not yet built or verified. Update this README and the task tracker together as the product progresses.
