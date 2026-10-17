@@ -7,6 +7,7 @@ This tracker reflects the project owner’s current description and the supplied
 - [x] Redesign the application flow and overall interface hierarchy. **Owner-confirmed.** The redesign includes a brand workspace, AI-coworker conversation, workforce/groups navigation, brand creation/evolution entry points, Campaign Studio, Visual DNA/material physics, a task pipeline, and account/settings views.
 - [x] Capture the current product status in the README, explicitly distinguishing the redesigned UI from the unimplemented backend.
 - [x] Create this project task tracker to record confirmed progress and outstanding work.
+- [x] Connect VYREN Room (`/room`) to live backend API. **Verified with 110/110 passing tests + E2E test.** Created `src/lib/room.ts`, resolved module collision in backend `src.api.routes`, wired message turns, interactive artifacts, decision gates, and honest connection status in `VyrenRoomView.tsx` with zero TypeScript errors.
 
 ## Waiting on project-owner input
 
