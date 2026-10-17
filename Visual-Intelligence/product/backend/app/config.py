@@ -10,20 +10,20 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # ── MongoDB & Redis ───────────────────────────────────────────────────────
-    mongodb_uri: str
+    mongodb_uri: str = "mongodb://localhost:27017"
     mongodb_db_name: str = "atelier_os"
     redis_url: str = "redis://localhost:6379"
 
     # ── Supabase Auth ─────────────────────────────────────────────────────────
-    supabase_url: str
-    supabase_anon_key: str
-    supabase_jwt_secret: str  # Used to verify JWT tokens server-side
+    supabase_url: str = "https://your-project-ref.supabase.co"
+    supabase_anon_key: str = "your-supabase-anon-key"
+    supabase_jwt_secret: str = "your-supabase-jwt-secret"  # Used to verify JWT tokens server-side
 
     # ── OpenAI (GPT Image 2) ──────────────────────────────────────────────────
-    openai_api_key: str
+    openai_api_key: str = ""
 
     # ── Google Gemini (NB2 + NB Pro) ─────────────────────────────────────────
-    gemini_api_key: str
+    gemini_api_key: str = ""
 
     # ── Cloudflare R2 (S3-compatible object storage) ─────────────────────────
     r2_account_id: str = ""
@@ -34,9 +34,9 @@ class Settings(BaseSettings):
     r2_url_expiry_seconds: int = 3600     # Signed URL expiry — 1 hour default
 
     # ── Razorpay (primary — India: UPI, cards, netbanking, wallets) ───────────
-    razorpay_key_id: str
-    razorpay_key_secret: str
-    razorpay_webhook_secret: str
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
 
     # ── Stripe (secondary — international cards, optional) ────────────────────
     stripe_secret_key: str = ""

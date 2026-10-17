@@ -2,7 +2,7 @@
 Phase 25 API Package.
 """
 from src.api.auth import authenticate_operator, OPERATOR_TOKEN_STORE
-from src.api.routes import router as control_plane_router
+from src.api.control_plane_routes import router as control_plane_router
 from src.api.health import health_router
 from src.api.errors import control_plane_exception_handler
 from src.api.middleware import ControlPlaneTracingMiddleware

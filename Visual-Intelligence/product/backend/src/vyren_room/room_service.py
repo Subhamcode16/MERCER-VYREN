@@ -22,18 +22,21 @@ class RoomService:
     def __init__(self):
         self._rooms: Dict[str, Room] = {}
 
-    def create_room(self, tenant_id: str, title: str, campaign_id: Optional[str] = None) -> Room:
+    def create_room(self, tenant_id: str, title: str, campaign_id: Optional[str] = None, room_id: Optional[str] = None) -> Room:
         """Initialize a new collaborative Room."""
-        room = Room(
-            tenant_id=tenant_id,
-            title=title,
-            campaign_id=campaign_id,
-            participants=[
+        kwargs = {
+            "tenant_id": tenant_id,
+            "title": title,
+            "campaign_id": campaign_id,
+            "participants": [
                 RoomParticipant(id="vyren_core", name="VYREN", role="Creative Operating System", is_human=False),
                 RoomParticipant(id="marcus_vance", name="Marcus Vance", role="AI Creative Director", is_human=False),
                 RoomParticipant(id="elena_vance", name="Elena Vance", role="Human Creative Director", is_human=True)
             ]
-        )
+        }
+        if room_id:
+            kwargs["room_id"] = room_id
+        room = Room(**kwargs)
         self._rooms[room.room_id] = room
         return room
 
@@ -41,7 +44,7 @@ class RoomService:
         """Fetch room verifying tenant boundary."""
         if room_id not in self._rooms:
             # Create a default fixture room if requested
-            return self.create_room(tenant_id=tenant_id, title="Autumn/Winter 2026 Creative Room")
+            return self.create_room(tenant_id=tenant_id, title="Autumn/Winter 2026 Creative Room", room_id=room_id)
 
         room = self._rooms[room_id]
         if room.tenant_id != tenant_id:

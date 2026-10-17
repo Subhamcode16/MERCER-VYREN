@@ -61,7 +61,7 @@ class SessionManager:
             )
 
         # Check TTL
-        if time.time() - session.created_at > self.session_ttl:
+        if time.time() - session.created_at >= self.session_ttl:
             self.revoke_session(session_id)
             raise StaleSessionReplayError(session_id=session_id)
 

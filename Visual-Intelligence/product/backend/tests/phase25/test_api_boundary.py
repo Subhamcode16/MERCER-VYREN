@@ -3,7 +3,7 @@ Phase 25 API Boundary and Route Tests.
 """
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from src.api.routes import router
+from src.api.control_plane_routes import router
 from src.api.errors import control_plane_exception_handler
 from src.control_plane.exceptions import (
     StaleActionConflictError,

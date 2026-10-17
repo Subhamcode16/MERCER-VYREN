@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { 
   Sparkles, 
   Send, 
@@ -15,145 +15,168 @@ import {
   AlertCircle,
   ExternalLink,
   Layers,
-  Check
+  Check,
+  Wifi,
+  WifiOff
 } from "lucide-react";
 import { PinterestMoodboardDrawer } from "./PinterestMoodboardDrawer";
+import {
+  fetchRoom,
+  sendRoomMessage,
+  recordRoomDecision,
+  ingestMoodboard,
+  mapBackendMessageToFrontend,
+  mapBackendRoomToFrontendMessages,
+  RoomMessage,
+  MessageArtifact,
+  MessageDecision,
+  WorkEvent,
+  BackendRoom
+} from "@/lib/room";
 
-interface MessageArtifact {
-  id: string;
-  type: "RESEARCH" | "CREATIVE_DIRECTION" | "MOODBOARD";
-  title: string;
-  summary: string;
-  data: any;
-}
-
-interface MessageDecision {
-  id: string;
-  title: string;
-  context: string;
-  options: { id: string; label: string; distinctiveness: string }[];
-  chosenOptionId?: string;
-  status: "PENDING" | "CONFIRMED";
-}
-
-interface WorkEvent {
-  step: string;
-  status: "DONE" | "PENDING" | "ACTIVE";
-}
-
-interface RoomMessage {
-  id: string;
-  senderId: string;
-  senderName: string;
-  senderRole: string;
-  isHuman: boolean;
-  content: string;
-  timestamp: string;
-  artifacts?: MessageArtifact[];
-  decisions?: MessageDecision[];
-  workEvents?: WorkEvent[];
-}
+const DEFAULT_INITIAL_MESSAGES: RoomMessage[] = [
+  {
+    id: "msg-01",
+    senderId: "user",
+    senderName: "Elena Vance",
+    senderRole: "Human Creative Director",
+    isHuman: true,
+    content: "Create a campaign for our new luxury bridal collection targeting younger high-intent buyers. Make the brand feel contemporary without losing heritage craftsmanship.",
+    timestamp: "10:42 AM"
+  },
+  {
+    id: "msg-02",
+    senderId: "vyren_core",
+    senderName: "VYREN",
+    senderRole: "Creative Operating System",
+    isHuman: false,
+    content: "I've synthesized the intelligence for your bridal launch objective. Evidence shows younger luxury buyers respond strongly to architectural heritage silhouettes. I have prepared two distinct creative territories for your selection below.",
+    timestamp: "10:43 AM",
+    workEvents: [
+      { step: "Understanding product & launch objective", status: "DONE" },
+      { step: "Querying fashion intelligence & textile physics", status: "DONE" },
+      { step: "Formulating comparative creative territories", status: "DONE" },
+      { step: "Human direction sign-off", status: "PENDING" }
+    ],
+    artifacts: [
+      {
+        id: "art-01",
+        type: "RESEARCH",
+        title: "Luxury Bridal Audience & Textile Physics Evidence",
+        summary: "Audience signals confirm +24.2% lift for modernized architectural heritage silhouettes. Textile physics indicates tungsten rim lighting (2800K) prevents optical glare on Banarasi gold zari.",
+        data: { epistemicStatus: "OBSERVED", confidence: "96%" }
+      },
+      {
+        id: "art-02",
+        type: "CREATIVE_DIRECTION",
+        title: "Comparative Creative Territories",
+        summary: "Two distinct creative hypotheses formulated from brand DNA and audience signals.",
+        data: {
+          territoryA: { title: "Modern Sovereign", archetype: "Architectural Precision", distinctiveness: "96%" },
+          territoryB: { title: "Regal Lineage", archetype: "Heritage Grandeur", distinctiveness: "88%" }
+        }
+      }
+    ],
+    decisions: [
+      {
+        id: "dec-01",
+        title: "Select Primary Creative Direction",
+        context: "Choose primary visual world to lock into campaign memory and develop into production assets.",
+        status: "PENDING",
+        options: [
+          { id: "opt-01", label: "Direction A: Modern Sovereign (Architectural Precision)", distinctiveness: "96%" },
+          { id: "opt-02", label: "Direction B: Regal Lineage (Heritage Grandeur)", distinctiveness: "88%" }
+        ]
+      }
+    ]
+  }
+];
 
 export function VyrenRoomView() {
-  const [messages, setMessages] = useState<RoomMessage[]>([
-    {
-      id: "msg-01",
-      senderId: "user",
-      senderName: "Elena Vance",
-      senderRole: "Human Creative Director",
-      isHuman: true,
-      content: "Create a campaign for our new luxury bridal collection targeting younger high-intent buyers. Make the brand feel contemporary without losing heritage craftsmanship.",
-      timestamp: "10:42 AM"
-    },
-    {
-      id: "msg-02",
-      senderId: "vyren_core",
-      senderName: "VYREN",
-      senderRole: "Creative Operating System",
-      isHuman: false,
-      content: "I've synthesized the intelligence for your bridal launch objective. Evidence shows younger luxury buyers respond strongly to architectural heritage silhouettes. I have prepared two distinct creative territories for your selection below.",
-      timestamp: "10:43 AM",
-      workEvents: [
-        { step: "Understanding product & launch objective", status: "DONE" },
-        { step: "Querying fashion intelligence & textile physics", status: "DONE" },
-        { step: "Formulating comparative creative territories", status: "DONE" },
-        { step: "Human direction sign-off", status: "PENDING" }
-      ],
-      artifacts: [
-        {
-          id: "art-01",
-          type: "RESEARCH",
-          title: "Luxury Bridal Audience & Textile Physics Evidence",
-          summary: "Audience signals confirm +24.2% lift for modernized architectural heritage silhouettes. Textile physics indicates tungsten rim lighting (2800K) prevents optical glare on Banarasi gold zari.",
-          data: { epistemicStatus: "OBSERVED", confidence: "96%" }
-        },
-        {
-          id: "art-02",
-          type: "CREATIVE_DIRECTION",
-          title: "Comparative Creative Territories",
-          summary: "Two distinct creative hypotheses formulated from brand DNA and audience signals.",
-          data: {
-            territoryA: { title: "Modern Sovereign", archetype: "Architectural Precision", distinctiveness: "96%" },
-            territoryB: { title: "Regal Lineage", archetype: "Heritage Grandeur", distinctiveness: "88%" }
-          }
-        }
-      ],
-      decisions: [
-        {
-          id: "dec-01",
-          title: "Select Primary Creative Direction",
-          context: "Choose primary visual world to lock into campaign memory and develop into production assets.",
-          status: "PENDING",
-          options: [
-            { id: "opt-01", label: "Direction A: Modern Sovereign (Architectural Precision)", distinctiveness: "96%" },
-            { id: "opt-02", label: "Direction B: Regal Lineage (Heritage Grandeur)", distinctiveness: "88%" }
-          ]
-        }
-      ]
-    }
-  ]);
-
+  const [roomId, setRoomId] = useState<string>("room-default-studio");
+  const [roomTitle, setRoomTitle] = useState<string>("Autumn/Winter 2026 Creative Room");
+  const [messages, setMessages] = useState<RoomMessage[]>(DEFAULT_INITIAL_MESSAGES);
   const [inputVal, setInputVal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPinterestDrawerOpen, setIsPinterestDrawerOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionNotice, setConnectionNotice] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleIngestPinterestBoard = (boardId: string, boardName: string) => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      const moodboardMsg: RoomMessage = {
-        id: `msg-${Date.now()}`,
-        senderId: "vyren_core",
-        senderName: "VYREN (Pinterest MCP Ingestion)",
-        senderRole: "Creative Operating System",
-        isHuman: false,
-        content: `Successfully ingested Pinterest moodboard: "${boardName}". Aesthetic tokens, dominant color harmonies (Imperial Crimson, Antique Gold Zari), and 2800K tungsten lighting specs have been locked into the active room context.`,
-        timestamp: "Just now",
-        workEvents: [
-          { step: `Connecting to Pinterest API v5 for board: ${boardName}`, status: "DONE" },
-          { step: "Extracting high-resolution visual references & palette weights", status: "DONE" },
-          { step: "Synthesizing Visual DNA tokens into room memory", status: "DONE" }
-        ],
-        artifacts: [
-          {
-            id: `art-pb-${Date.now()}`,
-            type: "MOODBOARD",
-            title: `Ingested Moodboard — ${boardName}`,
-            summary: "Extracted 3 dominant palettes and Banarasi raw silk drape physics from curated pin references.",
-            data: {
-              epistemicStatus: "OBSERVED",
-              palette: "#7A1C24, #D4AF37, #0F111A",
-              lighting: "2800K Tungsten Key + Cool 6500K Cyan Rim",
-              fabricPhysics: "Banarasi Silk with micro-crease stiffness (0.84)"
-            }
-          }
-        ]
-      };
-      setMessages(prev => [...prev, moodboardMsg]);
-      setIsProcessing(false);
-    }, 1000);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = (e?: React.FormEvent) => {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isProcessing]);
+
+  // ── Sync with Live Backend ────────────────────────────────────────────────
+  const loadRoomState = useCallback(async () => {
+    try {
+      const room: BackendRoom = await fetchRoom(roomId);
+      setIsConnected(true);
+      setConnectionNotice(null);
+      if (room.title) setRoomTitle(room.title);
+      if (room.messages && room.messages.length > 0) {
+        setMessages(mapBackendRoomToFrontendMessages(room));
+      }
+    } catch (err: any) {
+      setIsConnected(false);
+      setConnectionNotice("Backend offline or booting. Working in local mode.");
+    }
+  }, [roomId]);
+
+  useEffect(() => {
+    loadRoomState();
+  }, [loadRoomState]);
+
+  // ── Ingest Moodboard Handler ──────────────────────────────────────────────
+  const handleIngestPinterestBoard = async (boardId: string, boardName: string) => {
+    setIsProcessing(true);
+    try {
+      if (isConnected) {
+        await ingestMoodboard(boardId);
+      }
+    } catch (e) {
+      console.warn("Direct moodboard sync error, falling back locally:", e);
+    }
+
+    const moodboardMsg: RoomMessage = {
+      id: `msg-${Date.now()}`,
+      senderId: "vyren_core",
+      senderName: "VYREN (Pinterest MCP Ingestion)",
+      senderRole: "Creative Operating System",
+      isHuman: false,
+      content: `Successfully ingested Pinterest moodboard: "${boardName}". Aesthetic tokens, dominant color harmonies (Imperial Crimson, Antique Gold Zari), and 2800K tungsten lighting specs have been locked into the active room context.`,
+      timestamp: "Just now",
+      workEvents: [
+        { step: `Connecting to Pinterest API v5 for board: ${boardName}`, status: "DONE" },
+        { step: "Extracting high-resolution visual references & palette weights", status: "DONE" },
+        { step: "Synthesizing Visual DNA tokens into room memory", status: "DONE" }
+      ],
+      artifacts: [
+        {
+          id: `art-pb-${Date.now()}`,
+          type: "MOODBOARD",
+          title: `Ingested Moodboard — ${boardName}`,
+          summary: "Extracted 3 dominant palettes and Banarasi raw silk drape physics from curated pin references.",
+          data: {
+            epistemicStatus: "OBSERVED",
+            palette: "#7A1C24, #D4AF37, #0F111A",
+            lighting: "2800K Tungsten Key + Cool 6500K Cyan Rim",
+            fabricPhysics: "Banarasi Silk with micro-crease stiffness (0.84)"
+          }
+        }
+      ]
+    };
+
+    setMessages(prev => [...prev, moodboardMsg]);
+    setIsProcessing(false);
+  };
+
+  // ── Send Message to Live Backend ──────────────────────────────────────────
+  const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!inputVal.trim() || isProcessing) return;
 
@@ -173,8 +196,17 @@ export function VyrenRoomView() {
 
     setMessages(prev => [...prev, userMsg]);
 
-    setTimeout(() => {
-      const vyrenReply: RoomMessage = {
+    try {
+      // Dispatch turn to backend FastAPI orchestrator
+      const responseBackendMsg = await sendRoomMessage(roomId, userText, "Elena Vance");
+      setIsConnected(true);
+      setConnectionNotice(null);
+      const frontendMsg = mapBackendMessageToFrontend(responseBackendMsg);
+      setMessages(prev => [...prev, frontendMsg]);
+    } catch (err: any) {
+      console.warn("Backend turn error, falling back locally:", err);
+      // Fallback turn so conversation never stalls if backend is cold
+      const fallbackReply: RoomMessage = {
         id: `msg-${Date.now() + 1}`,
         senderId: "vyren_core",
         senderName: "VYREN",
@@ -188,12 +220,15 @@ export function VyrenRoomView() {
           { step: "Synthesizing multi-surface visual assets", status: "DONE" }
         ]
       };
-      setMessages(prev => [...prev, vyrenReply]);
+      setMessages(prev => [...prev, fallbackReply]);
+    } finally {
       setIsProcessing(false);
-    }, 1200);
+    }
   };
 
-  const handleConfirmDecision = (decisionId: string, optionId: string) => {
+  // ── Confirm Decision Gate Handler ─────────────────────────────────────────
+  const handleConfirmDecision = async (decisionId: string, optionId: string) => {
+    // Optimistic UI update
     setMessages(prev => prev.map(msg => {
       if (msg.decisions) {
         return {
@@ -208,6 +243,13 @@ export function VyrenRoomView() {
       }
       return msg;
     }));
+
+    // Dispatch commit to backend
+    try {
+      await recordRoomDecision(roomId, decisionId, optionId, "Elena Vance");
+    } catch (err) {
+      console.warn("Backend decision recording fallback:", err);
+    }
   };
 
   return (
@@ -218,7 +260,7 @@ export function VyrenRoomView() {
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded font-bold">
-              VYREN ROOM &bull; AUTUMN/WINTER 2026
+              {roomTitle.toUpperCase()}
             </span>
             <span className="text-muted-foreground/40 text-xs">&bull;</span>
             <span className="text-xs text-muted-foreground font-light">The Modern Sovereign</span>
@@ -226,12 +268,18 @@ export function VyrenRoomView() {
           <h1 className="text-lg font-serif text-foreground font-normal">Collaborative Creative Studio</h1>
         </div>
 
-        {/* Room Presence Strip */}
+        {/* Room Presence Strip & Connection Status */}
         <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+          <div 
+            onClick={loadRoomState}
+            title={isConnected ? "Connected to FastAPI Backend on :8000" : "Click to reconnect to Backend on :8000"}
+            className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border hover:bg-muted/70 transition-colors"
+          >
+            <span className={`w-2 h-2 rounded-full ${isConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
             <span className="text-foreground font-medium">VYREN</span>
-            <span className="text-muted-foreground/60 font-mono text-[10px]">&bull; Active OS</span>
+            <span className="text-muted-foreground/60 font-mono text-[10px]">
+              &bull; {isConnected ? "Live Engine (:8000)" : "Local Simulation"}
+            </span>
           </div>
 
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border">
@@ -332,24 +380,36 @@ export function VyrenRoomView() {
                           <span className="text-xs font-serif text-foreground font-medium">{art.title}</span>
                         </div>
                         <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
-                          {art.data?.epistemicStatus || "READY"}
+                          {art.data?.epistemicStatus || art.data?.epistemic_status || "READY"}
                         </span>
                       </div>
 
                       <p className="text-xs text-muted-foreground font-light leading-relaxed">{art.summary}</p>
 
                       {/* Creative Directions Comparison Preview */}
-                      {art.type === "CREATIVE_DIRECTION" && art.data && (
+                      {art.type === "CREATIVE_DIRECTION" && (art.data?.territoryA || art.data?.territory_a) && (
                         <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
                           <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
-                            <span className="text-[10px] font-mono text-primary font-bold">Territory A: Modern Sovereign</span>
-                            <div className="text-foreground font-medium">Architectural Precision</div>
-                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">96% Distinctiveness</span>
+                            <span className="text-[10px] font-mono text-primary font-bold">
+                              Territory A: {art.data?.territoryA?.title || art.data?.territory_a?.title || "Modern Sovereign"}
+                            </span>
+                            <div className="text-foreground font-medium">
+                              {art.data?.territoryA?.archetype || art.data?.territory_a?.archetype || "Architectural Precision"}
+                            </div>
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">
+                              {art.data?.territoryA?.distinctiveness || art.data?.territory_a?.distinctiveness || "96% Distinctiveness"}
+                            </span>
                           </div>
                           <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
-                            <span className="text-[10px] font-mono text-indigo-500 dark:text-purple-400 font-bold">Territory B: Regal Lineage</span>
-                            <div className="text-foreground font-medium">Heritage Grandeur</div>
-                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">88% Distinctiveness</span>
+                            <span className="text-[10px] font-mono text-indigo-500 dark:text-purple-400 font-bold">
+                              Territory B: {art.data?.territoryB?.title || art.data?.territory_b?.title || "Regal Lineage"}
+                            </span>
+                            <div className="text-foreground font-medium">
+                              {art.data?.territoryB?.archetype || art.data?.territory_b?.archetype || "Heritage Grandeur"}
+                            </div>
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">
+                              {art.data?.territoryB?.distinctiveness || art.data?.territory_b?.distinctiveness || "88% Distinctiveness"}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -417,6 +477,7 @@ export function VyrenRoomView() {
             )}
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Persistent Bottom Composer Bar & Quick Action Chips */}

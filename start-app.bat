@@ -4,12 +4,30 @@ echo  Mercer AI — Startup Sequence
 echo ============================================================
 
 echo.
-echo [1/3] Cleaning up previous server processes...
+echo [1/4] Cleaning up previous server processes...
 powershell -Command "$p = Get-NetTCPConnection -LocalPort 3000, 8000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique; if ($p) { Stop-Process -Id $p -Force -ErrorAction SilentlyContinue }"
 
 echo.
-echo [2/3] Starting Backend Server (FastAPI on :8000)...
-start "Mercer Backend" cmd /k "cd Visual-Intelligence\product\backend && uv run python -m uvicorn app.main:app --reload --reload-dir app --host 127.0.0.1 --port 8000"
+echo [2/4] Ensuring Backend Virtual Environment & Dependencies...
+if not exist "Visual-Intelligence\product\backend\.venv" (
+    echo Creating backend virtual environment...
+    cd Visual-Intelligence\product\backend && uv venv --python 3.12 .venv && cd ..\..\..
+)
+if not exist "Visual-Intelligence\product\backend\.venv\Scripts\uvicorn.exe" (
+    echo Installing backend dependencies...
+    cd Visual-Intelligence\product\backend && uv pip install -r requirements.txt --python .venv\Scripts\python.exe && cd ..\..\..
+)
+
+echo.
+echo [3/4] Ensuring Frontend Dependencies...
+if not exist "Visual-Intelligence\product\frontend\node_modules" (
+    echo Installing frontend node modules...
+    cd Visual-Intelligence\product\frontend && npm install && cd ..\..\..
+)
+
+echo.
+echo [4/4] Starting Backend Server (FastAPI on :8000)...
+start "Mercer Backend" cmd /k "cd Visual-Intelligence\product\backend && .venv\Scripts\python.exe -m uvicorn app.main:app --reload --reload-dir app --host 127.0.0.1 --port 8000"
 
 echo.
 echo      Waiting for backend to become healthy...
@@ -41,7 +59,7 @@ echo.
 echo      Backend is healthy after %ATTEMPTS%s.
 
 echo.
-echo [3/3] Starting Frontend Server (Next.js on :3000)...
+echo Starting Frontend Server (Next.js on :3000)...
 start "Mercer Frontend" cmd /k "cd Visual-Intelligence\product\frontend && npm run dev"
 
 echo.
