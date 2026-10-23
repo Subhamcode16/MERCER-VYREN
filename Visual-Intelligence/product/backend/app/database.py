@@ -117,6 +117,23 @@ async def _ensure_indexes() -> None:
     # ── brands ────────────────────────────────────────────────────────────────
     await db.brands.create_index([("workspace_id", ASCENDING)])
 
+    # ── Gate 1 bot role memory ────────────────────────────────────────────────
+    await db.bot_memories.create_index([
+        ("owner_id", ASCENDING), ("tenant_id", ASCENDING),
+        ("brand_id", ASCENDING), ("bot_id", ASCENDING),
+        ("created_at", DESCENDING),
+    ])
+    await db.bot_tasks.create_index([
+        ("owner_id", ASCENDING), ("tenant_id", ASCENDING),
+        ("brand_id", ASCENDING), ("bot_id", ASCENDING),
+        ("created_at", DESCENDING),
+    ])
+    await db.bot_tool_audit.create_index([
+        ("owner_id", ASCENDING), ("bot_id", ASCENDING),
+        ("task_id", ASCENDING),
+        ("created_at", DESCENDING),
+    ])
+
     # ── products ──────────────────────────────────────────────────────────────
     await db.products.create_index([("brand_id", ASCENDING)])
     await db.products.create_index([("domain", ASCENDING)])
@@ -131,6 +148,17 @@ async def _ensure_indexes() -> None:
     await db.campaigns.create_index([("id", ASCENDING)], unique=True)
     # Fast retrieval of user's campaigns
     await db.campaigns.create_index([("user_id", ASCENDING), ("created_at", DESCENDING)])
+    # New campaign scopes; legacy records without owner_id remain outside this index's query path.
+    await db.campaigns.create_index([
+        ("owner_id", ASCENDING), ("tenant_id", ASCENDING),
+        ("brand_id", ASCENDING), ("created_at", DESCENDING),
+    ])
+    await db.campaigns.create_index(
+        [("owner_id", ASCENDING), ("idempotency_key_hash", ASCENDING)],
+        unique=True,
+        partialFilterExpression={"idempotency_key_hash": {"$type": "string"}},
+        name="idx_campaign_owner_create_key",
+    )
 
     # ── graph_edges (ARC-001) ─────────────────────────────────────────────────
     await db.graph_edges.create_index([("source_id", ASCENDING)])

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api";
 import { AuthSlider } from "@/components/AuthSlider";
-import { Eye, EyeOff, X, ArrowRight, Sparkles } from "lucide-react";
+import { Eye, EyeOff, X, ArrowRight } from "lucide-react";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
 
 interface AuthModalProps {
@@ -15,6 +16,7 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }: AuthModalProps) {
+  const teamMode = usePathname()?.startsWith("/team") ?? false;
   const { playHoverSound, playFocusSound, playSubmitSound, playKeypressSound } = useTactileAudio();
   const [view, setView] = useState<"login" | "signup">(initialView);
   const [email, setEmail] = useState("");
@@ -110,13 +112,15 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
       />
 
       {/* Modal Container — Frosted Warm-Ivory Luxury OS Aesthetic */}
-      <div className="w-full max-w-5xl h-[660px] bg-[#faf8f5]/95 backdrop-blur-3xl border border-white/90 rounded-[28px] flex overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.22),inset_0_1.5px_2px_rgba(255,255,255,1)] relative z-10 animate-in fade-in zoom-in-95 duration-200">
+      <div className={`w-full h-[660px] flex overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-200 ${teamMode
+        ? "max-w-lg rounded-xl border border-[#c9d2c9] bg-[#f6f8f3] shadow-[0_25px_75px_rgba(20,43,29,0.23)]"
+        : "max-w-5xl bg-[#faf8f5]/95 backdrop-blur-3xl border border-white/90 rounded-[28px] shadow-[0_30px_80px_rgba(0,0,0,0.22),inset_0_1.5px_2px_rgba(255,255,255,1)]"}`}>
         
         {/* Left side: Image Showcase Slider */}
-        <AuthSlider />
+        {!teamMode && <AuthSlider />}
 
         {/* Right side: Editorial Form */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 sm:p-12 overflow-y-auto relative">
+        <div className={`w-full flex flex-col items-center justify-center p-8 sm:p-12 overflow-y-auto relative ${teamMode ? "" : "lg:w-1/2"}`}>
           
           {/* Close Button */}
           <button 
@@ -132,9 +136,11 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
             {/* Dual-Register Masthead */}
             <div className="mb-8 text-left">
               <h2 className="text-3xl font-sans font-extrabold text-[#0f1419] tracking-[-0.03em] leading-tight">
-                {view === "login" ? "Welcome Back," : "Create Account,"}
-                <span className="block font-serif italic text-xl sm:text-2xl font-semibold text-[#0f1419]/75 mt-0.5">
-                  {view === "login" ? "to the creative intelligence studio." : "join the brand operating system."}
+                {teamMode ? (view === "login" ? "Welcome back." : "Start your workspace.") : (view === "login" ? "Welcome Back," : "Create Account,")}
+                <span className={`block text-xl sm:text-2xl text-[#0f1419]/75 mt-0.5 ${teamMode ? "font-sans not-italic font-medium" : "font-serif italic font-semibold"}`}>
+                  {teamMode
+                    ? (view === "login" ? "Your Content Producer is here." : "Meet your first creative colleague.")
+                    : (view === "login" ? "to the creative intelligence studio." : "join the brand operating system.")}
                 </span>
               </h2>
             </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { Icon, type IconName } from "./Icon";
 import { Modal } from "./Modal";
+import "./radial-menu.css";
 import {
   loadLiquidGlass,
   type LiquidGlassInstance,
@@ -20,6 +21,7 @@ export const ALL_MENU_ITEMS: MenuItemDefinition[] = [
   // Routes / Navigation
   { id: "home", label: "Home", icon: "home", category: "routes" },
   { id: "studio", label: "Workspace", icon: "grid", category: "routes" },
+  { id: "team", label: "Team", icon: "group", category: "routes" },
   { id: "metrics", label: "Metrics Dashboard", icon: "metrics", category: "routes" },
   { id: "kanban", label: "Kanban Board", icon: "kanban", category: "routes" },
   { id: "assets", label: "Assets", icon: "assets", category: "routes" },
@@ -48,6 +50,7 @@ export const defaultPreferences: MenuPreferences = {
   opacity: 86,
   enabled: [
     "home",
+    "team",
     "metrics",
     "kanban",
     "assets",

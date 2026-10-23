@@ -113,8 +113,13 @@ class CreativeState(BaseModel):
 # --- CAMPAIGN ROOT ---
 
 class Campaign(BaseModel):
-    id: str = Field(default_factory=lambda: f"campaign_{uuid.uuid4().hex[:8]}")
+    id: str = Field(default_factory=lambda: f"campaign_{uuid.uuid4().hex}")
     user_id: Optional[str] = None            # Maps to Supabase Auth 'sub'
+    owner_id: Optional[str] = None           # Required for new scoped campaigns; absent on legacy records
+    tenant_id: Optional[str] = None          # Owning workspace, resolved by the server
+    brand_id: Optional[str] = None           # Brand inside the owning workspace
+    state: str = "DRAFT"
+    version: int = 1
     name: str = "Untitled Campaign"          # Human-readable folder name (from UI)
     material_path: Optional[str] = None      # Relative path to uploaded material image
     memory_stream: List[MemoryNode] = []     # Episodic AI reasoning log (drives Reasoning Panel)

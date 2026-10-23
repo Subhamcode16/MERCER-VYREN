@@ -18,15 +18,16 @@ const tabs = [
   { id: "subscription", label: "Subscription", icon: CreditCard },
 ];
 
-export default function SettingsClient() {
+export default function SettingsClient({ initialTab = "profile" }: { initialTab?: string }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const { playHoverSound, playFocusSound } = useTactileAudio();
 
   const handleRadialAction = (id: string) => {
     if (id === "home") router.push("/home");
     else if (id === "studio") router.push("/studio");
-    else if (id === "metrics") router.push("/metrics");
+    else if (id === "team") router.push("/team");
+    else if (id === "metrics") router.push("/activity");
     else if (id === "kanban") router.push("/kanban");
     else if (id === "assets") router.push("/assets");
     else if (id === "settings") setActiveTab("profile");

@@ -19,7 +19,7 @@ from app.database import connect_db, close_db
 from app.utils.cache import init_redis, close_redis
 from app.utils.logging import setup_logging
 from app.utils.security import limiter
-from app.routers import health, generate, auth, users, admin, payments, jobs, team
+from app.routers import health, generate, auth, users, admin, payments, jobs, team, bots, bot_memory, bot_tasks
 from app.routers.campaigns import router as campaigns_router
 
 from slowapi.errors import RateLimitExceeded
@@ -109,6 +109,9 @@ app.include_router(campaigns_router)
 app.include_router(payments.router)
 app.include_router(jobs.router)
 app.include_router(team.router)
+app.include_router(bots.router)
+app.include_router(bot_memory.router)
+app.include_router(bot_tasks.router)
 
 # Phase 31 & External MCP Gateways
 try:

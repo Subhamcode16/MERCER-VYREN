@@ -102,3 +102,9 @@ When generating or modifying code within this workspace:
    python Visual-Intelligence\product\backend\run_phase30_tests.py
    ```
    All 81 tests must pass (100% pass rate).
+
+## 6. Developer Navigation and Agent OS Progress
+
+For source navigation, first query the local developer index with `node tools/agent-os/cli.mjs search <terms>` or `neighbors <node-id>`. It indexes code files, symbols, and resolved imports and refreshes while `node tools/agent-os/server.mjs` is running. Read the returned source file before making a change; the index is a disposable navigation cache, not authoritative product knowledge. Use targeted `rg` when the index does not cover the question.
+
+Track Agent OS research and implementation tasks in `tools/agent-os/tasks.json`. The local board is at `http://127.0.0.1:4177` while its server runs. Keep card statuses and evidence links current as work proceeds. This board and index do not change VYREN's tenant, brand-memory, or human-approval rules.

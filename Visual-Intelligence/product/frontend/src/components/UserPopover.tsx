@@ -18,6 +18,7 @@ interface UserPopoverProps {
   profile: UserProfile;
   logout: () => void;
   isCollapsed?: boolean;
+  isWorkspace?: boolean;
 }
 
 function AnimatedNumber({ value }: { value: number }) {
@@ -39,7 +40,7 @@ function AnimatedNumber({ value }: { value: number }) {
   );
 }
 
-export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) {
+export function UserPopover({ profile, logout, isCollapsed, isWorkspace = false }: UserPopoverProps) {
   const { session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -70,16 +71,16 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
   const filledDots = Math.round(filledRatio * TOTAL_DOTS);
 
   return (
-    <div className="relative w-full" ref={popoverRef}>
+    <div className="relative w-44 shrink-0" ref={popoverRef}>
       {/* Popover Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: 15, scale: 0.95, filter: "blur(4px)" }}
+            initial={{ opacity: 0, y: -8, scale: 0.95, filter: "blur(4px)" }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: 10, scale: 0.96, filter: "blur(4px)" }}
+            exit={{ opacity: 0, y: -6, scale: 0.96, filter: "blur(4px)" }}
             transition={{ duration: 0.3, type: "spring", bounce: 0.2 }}
-            className="absolute bottom-full left-0 mb-3 w-full bg-[#111111] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 origin-bottom"
+            className="absolute top-full right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] bg-[#111111] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 origin-top-right"
           >
             <div className="p-3 border-b border-white/5 flex items-center gap-3 bg-black/20">
               <div className="relative">
@@ -98,7 +99,7 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
             <div className="px-4 pt-4 pb-3 border-b border-white/5 bg-gradient-to-b from-[#0A0A0A] to-transparent">
               <div className="flex justify-between items-center mb-3">
                 <span className="text-[12px] font-semibold text-white tracking-wide">Credits</span>
-                <Link href="/settings/usage" className="text-[11px] text-white/50 hover:text-white transition-colors flex items-center gap-1 font-medium group/link">
+                <Link href="/settings?tab=usage" onClick={() => setIsOpen(false)} className="text-[11px] text-white/50 hover:text-white transition-colors flex items-center gap-1 font-medium group/link">
                   <span className="flex items-center"><AnimatedNumber value={profile.credit_balance} />&nbsp;left</span>
                   <ChevronRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
                 </Link>
@@ -130,7 +131,7 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
               </Link>
               
               <Link 
-                href="/profile"
+                href="/settings?tab=profile"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] tracking-wide text-white/70 hover:bg-white/5 hover:text-white font-medium transition-colors group"
                 onClick={() => setIsOpen(false)}
               >
@@ -149,13 +150,14 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
             </div>
 
             <div className="p-1.5 border-t border-white/5 flex flex-col gap-0.5">
-              <button 
+              <Link
+                href="/faq"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] tracking-wide text-white/70 hover:bg-white/5 hover:text-white font-medium transition-colors w-full text-left group"
                 onClick={() => setIsOpen(false)}
               >
                 <HelpCircle size={15} className="text-white/40 group-hover:text-white transition-colors" />
                 <span>Help</span>
-              </button>
+              </Link>
               <button 
                 onClick={() => {
                   setIsOpen(false);
@@ -174,8 +176,13 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
       {/* Trigger Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center p-2.5 rounded-xl hover:bg-white/5 transition-all group ${
-          isCollapsed ? "justify-center -ml-0" : "-ml-2 gap-3"
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-label="Account menu"
+        className={`flex h-10 w-full items-center rounded-xl px-2 transition-all group ${
+          isWorkspace ? "text-[var(--ink)] hover:bg-[var(--soft)]" : "text-white hover:bg-white/10"
+        } ${
+          isCollapsed ? "justify-center" : "gap-2"
         }`}
       >
         <div className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-white/10 flex items-center justify-center text-[#E1D4C0] text-[10px] tracking-wider shrink-0 transition-transform group-hover:scale-105 shadow-inner">
@@ -184,14 +191,14 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
         {!isCollapsed && (
           <>
             <div className="flex-1 text-left min-w-0 animate-in fade-in duration-300">
-              <div className="text-[12px] text-white font-medium truncate tracking-wide">{userFullName}</div>
-              <div className="text-[10px] tracking-wide text-white/40 uppercase truncate mt-0.5 flex gap-1 items-center">
+              <div className={`text-[12px] font-medium truncate tracking-wide ${isWorkspace ? "text-[var(--ink)]" : "text-white"}`}>{userFullName}</div>
+              <div className={`text-[10px] tracking-wide uppercase truncate mt-0.5 flex gap-1 items-center ${isWorkspace ? "text-[var(--muted)]" : "text-white/60"}`}>
                 {profile.tier === 'FREE' ? 'Free Plan' : profile.tier}
               </div>
             </div>
             <ChevronUp 
               size={14} 
-              className={`text-white/40 transition-transform duration-400 group-hover:text-white/70 ${isOpen ? 'rotate-180' : ''}`} 
+              className={`transition-transform duration-400 ${isWorkspace ? "text-[var(--muted)]" : "text-white/60"} ${isOpen ? 'rotate-180' : ''}`}
             />
           </>
         )}

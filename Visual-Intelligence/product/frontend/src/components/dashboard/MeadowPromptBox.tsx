@@ -183,13 +183,6 @@ export interface PromptSettings {
   model: string;
 }
 
-const TYPEWRITER_SUGGESTIONS = [
-  "Build a new brand identity & positioning strategy...",
-  "Audit visual consistency across digital campaign assets...",
-  "Develop an omnichannel campaign with multi-surface visuals...",
-  "Define core visual DNA, material texture physics, and lighting...",
-];
-
 export const MeadowPromptBox: React.FC = () => {
   const router = useRouter();
   const { playHoverSound, playFocusSound, playSubmitSound, playKeypressSound } = useTactileAudio();
@@ -219,44 +212,6 @@ export const MeadowPromptBox: React.FC = () => {
     top: 42,
   });
 
-  const [typewriterText, setTypewriterText] = useState("");
-  const [promptIndex, setPromptIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
-  useEffect(() => {
-    if (draft.length > 0) {
-      setTypewriterText("");
-      return;
-    }
-
-    const currentFullPrompt = TYPEWRITER_SUGGESTIONS[promptIndex % TYPEWRITER_SUGGESTIONS.length];
-    let timer: NodeJS.Timeout;
-
-    if (!isDeleting) {
-      if (typewriterText.length < currentFullPrompt.length) {
-        timer = setTimeout(() => {
-          setTypewriterText(currentFullPrompt.slice(0, typewriterText.length + 1));
-        }, 65);
-      } else {
-        timer = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2600);
-      }
-    } else {
-      if (typewriterText.length > 0) {
-        timer = setTimeout(() => {
-          setTypewriterText(currentFullPrompt.slice(0, typewriterText.length - 1));
-        }, 30);
-      } else {
-        setIsDeleting(false);
-        setPromptIndex((prev) => (prev + 1) % TYPEWRITER_SUGGESTIONS.length);
-      }
-    }
-
-    return () => clearTimeout(timer);
-  }, [typewriterText, isDeleting, promptIndex, draft]);
-
   const root = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const mirror = useRef<HTMLDivElement>(null);
@@ -269,8 +224,6 @@ export const MeadowPromptBox: React.FC = () => {
   const frame = useRef(0);
   const mounted = useRef(true);
   const voice = useRef({ base: "", text: "", cancel: false });
-  const draftCallback = useRef(setDraft);
-  draftCallback.current = setDraft;
 
   const [selection, setSelection] = useState(0);
   const before = draft.slice(0, selection);
@@ -338,14 +291,6 @@ export const MeadowPromptBox: React.FC = () => {
     return () => {
       mounted.current = false;
       if (recognition.current) {
-        draftCallback.current(
-          voice.current.cancel
-            ? voice.current.base
-            : [voice.current.base, voice.current.text]
-                .filter(Boolean)
-                .join(" ")
-                .trim()
-        );
         recognition.current.onend = null;
         recognition.current.onresult = null;
         recognition.current.abort();
@@ -621,7 +566,7 @@ export const MeadowPromptBox: React.FC = () => {
             .filter(Boolean)
             .join(" ")
             .trim();
-      draftCallback.current(text);
+      setDraft(text);
       setListening(false);
       setNotice(
         voice.current.cancel
@@ -940,19 +885,11 @@ export const MeadowPromptBox: React.FC = () => {
                 ref={input}
                 rows={3}
                 aria-label="Message assistant"
-                placeholder={
-                  draft.length === 0
-                    ? typewriterText
-                      ? typewriterText + "│"
-                      : "Work with " + name + "…"
-                    : ""
-                }
+                placeholder={draft.length === 0 ? "Work with " + name + "…" : ""}
                 value={draft}
                 onFocus={() => {
-                  setIsInputFocused(true);
                   playFocusSound();
                 }}
-                onBlur={() => setIsInputFocused(false)}
                 onScroll={(e) => {
                   if (mirror.current)
                     mirror.current.scrollTop = e.currentTarget.scrollTop;
