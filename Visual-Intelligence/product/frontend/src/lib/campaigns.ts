@@ -17,6 +17,11 @@ export interface CampaignSummary {
   name: string;
   has_material: boolean;
   created_at: string;
+  owner_id: string;
+  tenant_id: string;
+  brand_id: string;
+  state: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+  version: number;
 }
 
 export interface MemoryNode {
@@ -40,6 +45,11 @@ export interface ProductDNA {
 
 export interface FullCampaign {
   id: string;
+  owner_id: string;
+  tenant_id: string;
+  brand_id: string;
+  state: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+  version: number;
   name: string;
   material_path: string | null;
   memory_stream: MemoryNode[];
@@ -91,11 +101,12 @@ export async function listCampaigns(): Promise<CampaignSummary[]> {
   return apiFetch('/api/campaigns');
 }
 
-/** POST /api/campaigns — create a new campaign folder by name */
-export async function createCampaign(name: string): Promise<CampaignSummary> {
+/** POST /api/campaigns — caller keeps the same key when retrying one create action. */
+export async function createCampaign(name: string, brandId: string, idempotencyKey: string): Promise<CampaignSummary> {
   return apiFetch('/api/campaigns', {
     method: 'POST',
-    body: JSON.stringify({ name }),
+    headers: { 'X-Idempotency-Key': idempotencyKey },
+    body: JSON.stringify({ name, brand_id: brandId }),
   });
 }
 

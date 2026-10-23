@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, createContext, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { UserPopover } from "@/components/UserPopover";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
 import { Pullcord } from "@/components/workspace/Pullcord";
-import { LogIn, Volume2, VolumeX } from "lucide-react";
+import { RadialMenu } from "@/components/workspace/RadialMenu";
+import { Volume2, VolumeX } from "lucide-react";
 
 export const SidebarContext = createContext<{
   isInWorkspace: boolean;
@@ -20,13 +21,15 @@ export const SidebarContext = createContext<{
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isWorkspace = 
     pathname?.startsWith("/studio") || 
     pathname?.startsWith("/settings") || 
     pathname?.startsWith("/kanban") || 
     pathname?.startsWith("/campaigns") ||
     pathname?.startsWith("/activity") ||
-    pathname?.startsWith("/assets");
+    pathname?.startsWith("/assets") ||
+    pathname?.startsWith("/team");
   const isSettings = pathname?.startsWith("/settings");
   const { session, profile, isLoading, logout, openAuthModal } = useAuth();
   const { isMuted, toggleMute, playHoverSound } = useTactileAudio();
@@ -51,7 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         
         {/* Top Header Bar: Wordmark on very left, Auth & Audio on very right */}
         <header 
-          className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-3.5 pointer-events-auto transition-colors duration-200 animate-reveal-down ${
+          className={`fixed top-0 left-0 right-0 z-30 h-16 flex items-center justify-between gap-4 px-8 pointer-events-auto transition-colors duration-200 animate-reveal-down ${
             isWorkspace 
               ? "bg-[var(--surface,#f8f6f0)]/95 backdrop-blur-xl border-b border-[var(--line,#e3dfd4)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-[var(--ink,#0f1419)]" 
               : "bg-gradient-to-b from-black/20 via-black/5 to-transparent"
@@ -94,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
 
           {/* Very Right: Workspace Actions, Audio Toggle & Auth Buttons */}
-          <div className={`flex items-center gap-2.5 ${isWorkspace ? "mr-12" : ""}`}>
+          <div className={`ml-auto flex min-w-0 items-center gap-2.5 ${isWorkspace ? "mr-12" : ""}`}>
             
             {/* Slot for Workspace Action Buttons (moved up from workspace header) */}
             <div id="top-header-workspace-actions" className="flex items-center gap-2" />
@@ -125,7 +128,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* User Auth Controls */}
             {session && profile ? (
-              <UserPopover profile={profile} logout={logout} isCollapsed={false} />
+              <UserPopover profile={profile} logout={logout} isCollapsed={false} isWorkspace={isWorkspace} />
             ) : isSettings ? (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--line)] shadow-2xs">
                 <div className="w-5 h-5 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center text-[10px] font-bold font-mono">
@@ -163,7 +166,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Workspace Theme Pullcord Trigger Switch */}
-        {isWorkspace && (
+        {isWorkspace && !pathname?.startsWith("/team") && (
           <Pullcord
             night={resolvedTheme === "dark"}
             onToggle={toggleTheme}
@@ -174,6 +177,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 h-full min-h-0 relative flex flex-col min-w-0 overflow-hidden">
           {children}
         </main>
+
+        {!pathname?.startsWith("/studio") && !pathname?.startsWith("/settings") && (
+          <RadialMenu
+            onAction={(id) => {
+              const routes: Record<string, string> = {
+                home: "/home",
+                studio: "/studio",
+                team: "/team",
+                metrics: "/activity",
+                kanban: "/kanban",
+                assets: "/assets",
+                settings: "/settings",
+              };
+              if (id === "appearance") toggleTheme();
+              else router.push(routes[id] ?? "/studio");
+            }}
+          />
+        )}
 
       </div>
     </SidebarContext.Provider>

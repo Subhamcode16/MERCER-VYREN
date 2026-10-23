@@ -1,0 +1,313 @@
+.radial-menu {
+  position: fixed;
+  width: var(--radial-size, 52px);
+  height: var(--radial-size, 52px);
+  transform: translate(-50%, -50%);
+  z-index: 35;
+  isolation: isolate;
+  touch-action: none;
+}
+.liquid-glass-host {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: var(--radial-size, 52px);
+  height: var(--radial-size, 52px);
+  overflow: hidden;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: var(--radial-opacity, 0.86);
+  filter: saturate(1.08);
+}
+.radial-liquid-surface,
+.radial-liquid-surface canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+.radial-liquid-surface canvas {
+  z-index: 0 !important;
+  box-shadow:
+    inset 0 1px #ffffffa8,
+    0 10px 28px #10251e26 !important;
+}
+.radial-trigger,
+.radial-action {
+  position: absolute;
+  inset: 0;
+  width: var(--radial-size, 52px);
+  height: var(--radial-size, 52px);
+  border: 1px solid color-mix(in srgb, var(--line) 72%, white 28%);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 48%, transparent);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  box-shadow:
+    0 9px 30px #10251e20,
+    inset 0 1px #ffffff8a;
+  transition:
+    transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 160ms ease,
+    background 160ms ease;
+}
+.radial-trigger {
+  z-index: 2;
+  background: color-mix(in srgb, rgba(15, 27, 24, 0.52) 72%, transparent);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  cursor: grab;
+  opacity: var(--radial-opacity, 0.86);
+}
+.radial-menu:has(.radial-liquid-surface) .radial-trigger {
+  background: rgba(15, 27, 24, 0.28);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: inset 0 1px #ffffff70;
+}
+.radial-trigger:active {
+  cursor: grabbing;
+}
+.radial-menu svg {
+  width: calc(var(--radial-size, 52px) * 0.38);
+  height: calc(var(--radial-size, 52px) * 0.38);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+.radial-settings-modal {
+  width: min(430px, calc(100vw - 28px)) !important;
+}
+.radial-settings-intro {
+  margin: 0 0 10px;
+  font-size: 11px !important;
+}
+.radial-settings-body {
+  display: grid;
+  gap: 14px;
+  max-height: min(65vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.radial-settings-body::-webkit-scrollbar {
+  width: 4px;
+}
+.radial-settings-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
+}
+.radial-range {
+  display: grid;
+  gap: 8px;
+}
+.radial-range > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.radial-range output {
+  color: var(--muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.radial-range input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.radial-action-options {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+}
+.radial-action-options legend {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+.radial-action-options label {
+  min-height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.radial-action-options label:hover {
+  background: var(--soft);
+}
+.radial-action-options label > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.radial-action-options svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+}
+.radial-action-options input {
+  accent-color: var(--accent);
+}
+.radial-action {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0, 0) scale(0.55);
+  transition-delay: 0ms;
+}
+.radial-menu.open .radial-action {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(var(--radial-x), var(--radial-y)) scale(1);
+  transition-delay: var(--radial-delay);
+}
+.radial-action:hover {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+.radial-action > span {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-3px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 7px 22px #0001;
+  font-size: 10px;
+  color: var(--ink);
+  transition:
+    opacity 130ms ease,
+    transform 130ms ease;
+}
+.radial-action:hover > span,
+.radial-action:focus-visible > span {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.shortcut-list {
+  display: grid;
+  gap: 11px;
+}
+.shortcut-list span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.shortcut-list kbd {
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 7px;
+  background: var(--soft);
+  padding: 4px 7px;
+  font-size: 11px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .radial-trigger,
+  .radial-action,
+  .radial-action > span {
+    transition: none;
+  }
+}
+
+.radial-settings-modal {
+  --accent: #1e3a34;
+  --accent-ink: #fff;
+  --muted: #5e6d68;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  border: 1px solid #d9dfd7;
+  border-radius: 18px;
+  background: var(--surface, #fff);
+  color: var(--ink, #10251e);
+  box-shadow: 0 24px 70px #10251e2d;
+  z-index: 1000;
+}
+
+.radial-settings-modal[open] {
+  display: flex;
+  flex-direction: column;
+  width: min(430px, calc(100vw - 28px));
+  max-height: min(720px, calc(100dvh - 40px));
+  overflow: hidden;
+}
+
+.radial-settings-modal::backdrop {
+  background: #10251e6b;
+  backdrop-filter: blur(5px);
+}
+
+.radial-settings-modal .dialoghead,
+.radial-settings-modal .dialogfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px 19px;
+}
+
+.radial-settings-modal .dialoghead {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line, #e3dfd4);
+  font-size: 15px;
+}
+
+.radial-settings-modal .dialoghead .icon-only {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink, #10251e);
+}
+
+.radial-settings-modal .dialoghead .icon-only svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.radial-settings-modal .dialogbody {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 19px 16px;
+}
+
+.radial-settings-modal .dialogfoot {
+  justify-content: flex-end;
+  flex-shrink: 0;
+  border-top: 1px solid var(--line, #e3dfd4);
+}
+
+.radial-settings-modal .dialogfoot button {
+  padding: 8px 12px;
+  border-radius: 9px;
+}
+
+.radial-settings-modal .dialogfoot .primary {
+  background: var(--accent, #10251e);
+  color: var(--accent-ink, #fff);
+}

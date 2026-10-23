@@ -282,6 +282,7 @@ export function VyrenWorkspace() {
         onAction={(id) => {
           if (id === "home") router.push("/home");
           else if (id === "studio") router.push("/studio");
+          else if (id === "team") router.push("/team");
           else if (id === "metrics") router.push("/activity");
           else if (id === "kanban") router.push("/kanban");
           else if (id === "assets") router.push("/assets");

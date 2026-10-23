@@ -38,6 +38,7 @@ type DockProps = {
 type DockItemProps = {
   className?: string;
   children: React.ReactNode;
+  label?: string;
   onClick?: () => void;
   onMouseEnter?: () => void;
 };
@@ -131,7 +132,7 @@ function Dock({
   );
 }
 
-function DockItem({ children, className, onClick, onMouseEnter }: DockItemProps) {
+function DockItem({ children, className, label, onClick, onMouseEnter }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { distance, magnification, mouseX, mouseY, spring, orientation } = useDock();
   const isVertical = orientation === 'vertical';
@@ -234,7 +235,13 @@ function DockItem({ children, className, onClick, onMouseEnter }: DockItemProps)
         )}
         tabIndex={0}
         role="button"
-        aria-haspopup="true"
+        aria-label={label}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick?.();
+          }
+        }}
       >
         {Children.map(children, (child) => {
           if (!React.isValidElement(child)) return child;

@@ -1,14 +1,16 @@
 import os
-from fastapi import APIRouter, HTTPException, UploadFile, File, BackgroundTasks, Path, Request
+from fastapi import APIRouter, HTTPException, UploadFile, File, BackgroundTasks, Path, Request, Header
 from fastapi.responses import StreamingResponse
 import json
+from hashlib import sha256
 from app.utils.cache import get_redis, in_memory_pubsub
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional
 from datetime import datetime
 
 from app.models.campaign import Campaign, MemoryNode, ProductDNA, ConfidenceField, CreativeState
 from app.storage.campaign_store import CampaignStore
+from app.database import get_db
 from app.storage.asset_store import AssetStore
 from app.adapters.vision_adapter import VisionAdapter
 from app.adapters.prompt_engine import PromptEngine
@@ -76,6 +78,28 @@ vision_adapter = VisionAdapter()
 prompt_engine = PromptEngine()
 
 
+async def _owned_brand(user_id: str, brand_id: str):
+    db = get_db()
+    brand = await db.brands.find_one({"_id": brand_id})
+    if brand is None:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    workspace = await db.workspaces.find_one(
+        {"_id": brand.get("workspace_id"), "owner_id": user_id}
+    )
+    if workspace is None:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return workspace, brand
+
+
+async def _owned_campaign(campaign_id: str, user_id: str) -> Campaign:
+    campaign = await store.get_owned_campaign(campaign_id, user_id)
+    if campaign is None or not campaign.tenant_id or not campaign.brand_id:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    workspace, _ = await _owned_brand(user_id, campaign.brand_id)
+    if workspace["_id"] != campaign.tenant_id:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return campaign
+
 async def append_and_publish(campaign: Campaign, node: MemoryNode):
     """Helper to append a node, save to DB, and publish to Redis (or fallback to in-memory) for SSE."""
     campaign.memory_stream.append(node)
@@ -97,7 +121,10 @@ async def append_and_publish(campaign: Campaign, node: MemoryNode):
 # --- Request/Response Models ---
 
 class CreateCampaignRequest(BaseModel):
-    name: str = Field("Untitled Campaign", max_length=100)
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    brand_id: str
+    name: str = Field("Untitled Campaign", min_length=1, max_length=100)
 
 class RenameCampaignRequest(BaseModel):
     name: str = Field(..., max_length=100)
@@ -108,6 +135,21 @@ class CampaignSummary(BaseModel):
     name: str
     has_material: bool
     created_at: str
+    owner_id: str
+    tenant_id: str
+    brand_id: str
+    state: str
+    version: int
+
+
+def _summary(campaign: Campaign) -> CampaignSummary:
+    return CampaignSummary(
+        id=campaign.id, name=campaign.name,
+        has_material=campaign.material_path is not None,
+        created_at=campaign.created_at,
+        owner_id=campaign.owner_id, tenant_id=campaign.tenant_id,
+        brand_id=campaign.brand_id, state=campaign.state, version=campaign.version,
+    )
 
 # --- Routes ---
 
@@ -119,32 +161,35 @@ async def list_campaigns(request: Request, user: AuthenticatedUser = Depends(get
     Each item is a lightweight summary (id, name, has_material).
     """
     campaigns = await store.list_campaigns(user_id=user.user_id)
-    return [
-        CampaignSummary(
-            id=c.id,
-            name=c.name,
-            has_material=c.material_path is not None,
-            created_at=c.created_at
-        )
-        for c in sorted(campaigns, key=lambda c: c.created_at)
-    ]
+    visible = []
+    for candidate in campaigns:
+        try:
+            visible.append(await _owned_campaign(candidate.id, user.user_id))
+        except HTTPException as exc:
+            if exc.status_code != 404:
+                raise
+    return [_summary(c) for c in sorted(visible, key=lambda c: c.created_at)]
 
-@router.post("", response_model=CampaignSummary)
+@router.post("", response_model=CampaignSummary, status_code=201)
 @limiter.limit("30/minute")
-async def create_campaign(request: Request, body: CreateCampaignRequest, user: AuthenticatedUser = Depends(get_current_user)):
+async def create_campaign(request: Request, body: CreateCampaignRequest,
+                          idempotency_key: str = Header(..., alias="X-Idempotency-Key", min_length=16, max_length=128),
+                          user: AuthenticatedUser = Depends(get_current_user)):
     """
     Creates a new Campaign folder from just a name.
     The identity, planning, execution, and evaluation phases are empty and fill
     progressively as the user uploads material and triggers AI analysis.
     """
-    campaign = Campaign(name=body.name, user_id=user.user_id)
-    await store.save_campaign(campaign)
-    return CampaignSummary(
-        id=campaign.id,
-        name=campaign.name,
-        has_material=False,
-        created_at=campaign.created_at
-    )
+    workspace, _ = await _owned_brand(user.user_id, body.brand_id)
+    campaign = Campaign(name=body.name, user_id=user.user_id, owner_id=user.user_id,
+                        tenant_id=workspace["_id"], brand_id=body.brand_id)
+    key_hash = sha256(f"{user.user_id}:{idempotency_key}".encode()).hexdigest()
+    payload_hash = sha256(json.dumps({"brand_id": body.brand_id, "name": body.name}, sort_keys=True).encode()).hexdigest()
+    try:
+        campaign = await store.insert_campaign(campaign, key_hash, payload_hash)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return _summary(campaign)
 
 @router.get("/{campaign_id}", response_model=Campaign)
 @limiter.limit("30/minute")
@@ -153,51 +198,27 @@ async def get_campaign(request: Request, campaign_id: str = Path(..., pattern="^
     Returns the full Campaign object including memory_stream, ProductDNA, and all lifecycle phases.
     The frontend uses this to restore workspace state after the user navigates away and comes back.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
     return campaign
 
 @router.patch("/{campaign_id}", response_model=CampaignSummary)
 @limiter.limit("30/minute")
 async def rename_campaign(request: Request, body: RenameCampaignRequest, campaign_id: str = Path(..., pattern="^[a-zA-Z0-9_-]+$"), user: AuthenticatedUser = Depends(get_current_user)):
     """Renames a campaign folder."""
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
     campaign.name = body.name
     campaign.updated_at = datetime.utcnow().isoformat()
     await store.save_campaign(campaign)
-    return CampaignSummary(
-        id=campaign.id,
-        name=campaign.name,
-        has_material=campaign.material_path is not None,
-        created_at=campaign.created_at
-    )
+    return _summary(campaign)
 
 @router.delete("/{campaign_id}")
 @limiter.limit("30/minute")
 async def delete_campaign(request: Request, campaign_id: str = Path(..., pattern="^[a-zA-Z0-9_-]+$"), user: AuthenticatedUser = Depends(get_current_user)):
     """
-    Deletes a campaign folder and all its associated asset files.
+    Legacy hard deletion is unavailable for scoped campaigns pending archive support.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
-
-    # Delete the binary asset files (images)
-    await asset_store.delete_campaign_assets(campaign_id)
-
-    # Delete campaign from DB
-    await store.delete_campaign(campaign_id)
-
-    return {"status": "deleted", "campaign_id": campaign_id}
+    await _owned_campaign(campaign_id, user.user_id)
+    raise HTTPException(status_code=409, detail="Campaign archive is required")
 
 @router.post("/{campaign_id}/material")
 @limiter.limit("30/minute")
@@ -206,11 +227,7 @@ async def upload_material(request: Request, campaign_id: str = Path(..., pattern
     Accepts a multipart image upload and saves it to the campaign's asset directory.
     Updates the campaign JSON with the material_path and marks it as ready for analysis.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
 
     file_bytes = await file.read()
 
@@ -248,11 +265,7 @@ async def analyze_material(request: Request, background_tasks: BackgroundTasks, 
     Runs the analysis as a background task and streams the results into the
     campaign's memory_stream and identity phase for frontend replay.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
     if not campaign.material_path:
         raise HTTPException(status_code=400, detail="No material uploaded yet. Upload an image first.")
 
@@ -355,11 +368,7 @@ async def approve_campaign_strategy(request: Request, campaign_id: str = Path(..
     Approves the AI proposed creative strategy, granting the 'Green Signal' (LAW-004).
     This transitions the creative state status from 'pending_green_signal' to 'approved'.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
     
     if not campaign.v3_creative_state:
         raise HTTPException(status_code=400, detail="No creative strategy generated to approve.")
@@ -384,11 +393,7 @@ async def update_campaign_options(request: Request, body: UpdateOptionsRequest, 
     """
     Saves the user's manual selections for background, pose, and lighting.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
 
     campaign.planning.selected_background = body.background
     campaign.planning.selected_pose = body.pose
@@ -408,11 +413,7 @@ async def generate_campaign(request: Request, body: GenerateRequest, campaign_id
     and generate the moodboard brief and asset prompts.
     Stores the output in the DB. Returns placeholder images for the MVP.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
         
     if not campaign.v3_creative_state:
         raise HTTPException(
@@ -554,11 +555,7 @@ async def stream_campaign_thoughts(request: Request, campaign_id: str = Path(...
     Server-Sent Events (SSE) endpoint to stream AI thoughts (memory_stream) in real time.
     Supports local in-memory fallback if Redis is not running.
     """
-    campaign = await store.get_campaign(campaign_id)
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
-    if campaign.user_id and campaign.user_id != user.user_id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this campaign")
+    campaign = await _owned_campaign(campaign_id, user.user_id)
 
     redis = get_redis()
 

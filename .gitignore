@@ -22,6 +22,10 @@ planner_debug.log
 jwt_debug.log
 backend.log
 
+# Local Agent OS working state
+.codex-tmp/
+tools/agent-os/.cache/
+
 # Node & Frontend
 node_modules/
 dist/

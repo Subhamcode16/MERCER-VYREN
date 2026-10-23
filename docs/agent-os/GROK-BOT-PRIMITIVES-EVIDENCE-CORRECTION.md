@@ -1,0 +1,17 @@
+# Grok Bot primitives — evidence correction
+
+**Date:** 2026-10-18  
+**Reason:** Correct the earlier VYREN summary that failed to identify which proposed primitives are documented Grok Bot behavior. Product documentation proves observable behavior, not private implementation details.
+
+| Primitive | What the official sources establish | VYREN interpretation |
+| --- | --- | --- |
+| Persistent role bots | [Overview](https://docs.x.ai/grok-bot/overview) and [Bot management](https://docs.x.ai/grok-bot/bots) describe durable named Bots with distinct jobs, conversations, stable preferences, role context, and routines. | **Adopt** role-owned persistent bots, with brand/tenant-scoped state. |
+| Shared context and memory | [Bot management](https://docs.x.ai/grok-bot/bots) distinguishes each Bot's own learned context from context exchanged through direct messages, group chats, and shared files. [Files and results](https://docs.x.ai/grok-bot/files-and-results) documents shared `/workspace` files. | **Adapt:** role memory, brand-shared memory, and project artifacts require explicit scope and provenance. A shared file is not automatically approved canonical memory. |
+| Bot messaging and group chat | [Message and collaborate](https://docs.x.ai/grok-bot/chat-and-collaboration) documents one-to-one chats, groups of Bots, `@` mentions, bot-to-bot asynchronous handoffs, and visible group messages. | **Adopt** a messaging-first team interface and auditable handoffs. "Telegram-like" describes the desired interaction style; the official source does not establish Telegram as Grok Bot's interface or integration. |
+| Shared computer and screens | [Computer and apps](https://docs.x.ai/grok-bot/computer-and-apps) says all Bots of one user share one persistent computer, browser sessions, files, and credentials. Each Bot gets its own screen; it can run one computer-use task on that screen at a time. Screens are not security boundaries. | **Adapt:** a workspace/computer per isolated tenant or account scope, with per-bot screens or sessions if needed. Do not copy shared credentials across unrelated brands or customers. |
+| Bot action and approvals | [Overview](https://docs.x.ai/grok-bot/overview) and [Approvals, security, and privacy](https://docs.x.ai/grok-bot/approvals-security-and-privacy) describe tools/computer actions and approval checks. | **Adapt:** VYREN bots may propose work, but its separate action service enforces exact per-post approval. This is VYREN's stricter internal design; public docs do not prove Grok Bot uses the same service separation. |
+| Model routing | The reviewed official Grok Bot pages do not specify an internal model-routing algorithm or contract. | **VYREN design choice:** route reasoning, writing, and media tasks by modality, quality, cost, and policy. Do not attribute this design to Grok Bot. |
+
+**Important wording correction:** Grok Bot gives each Bot **a separate screen on one shared computer per user**. Saying each Bot has an isolated computer, or all Bots literally share one screen, would both be inaccurate. Grok Bot's shared computer is a useful product reference, while VYREN's tenant isolation still governs implementation.
+
+**Research limits:** These primary sources establish user-visible product behavior and documented controls. They do not reveal Grok Bot's private storage schema, scheduler, model router, execution service implementation, or how memory is ranked. Those remain unknown rather than inferred facts.

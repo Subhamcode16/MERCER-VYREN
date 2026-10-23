@@ -1,0 +1,516 @@
+{
+  "project": "VYREN Agent OS",
+  "owner": "Subham / ILYREN",
+  "updatedAt": "2026-10-23T13:28:58.000Z",
+  "tasks": [
+    {
+      "id": "OS-001",
+      "title": "Research Grok Bot public architecture",
+      "area": "Research",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Maintain source-linked facts, inference, VYREN design, and unknowns. Subham's xAI design article pass now maps bot roster, presence, computer preview/takeover, inline artifacts, role memory, and routines to VYREN.",
+      "evidence": "docs/agent-os/GROK-BOT-DESIGN-PRINCIPLES-TO-VYREN.md"
+    },
+    {
+      "id": "OS-002",
+      "title": "Map the agent runtime loop",
+      "area": "Research",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Document planning, context, tool routing, observation, verification, recovery, memory, and handoff contracts.",
+      "evidence": "docs/agent-os/VYREN-AGENT-RUNTIME-LOOP-v0.1.md"
+    },
+    {
+      "id": "OS-003",
+      "title": "Install global engineering skills",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Install and verify agent-skills, Ponytail, and gstack at pinned revisions.",
+      "evidence": "docs/agent-os/SKILLS-INSTALL.md",
+      "updatedAt": "2026-10-18T11:59:06.147Z"
+    },
+    {
+      "id": "OS-004",
+      "title": "Launch live progress board",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Serve a local Kanban board backed by this task file, with live updates and activity history.",
+      "evidence": "tools/agent-os/README.md",
+      "updatedAt": "2026-10-18T11:59:22.970Z"
+    },
+    {
+      "id": "OS-005",
+      "title": "Build searchable code knowledge index",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Index source files, symbols, and import relationships incrementally for bounded search.",
+      "evidence": "tools/agent-os/README.md",
+      "updatedAt": "2026-10-18T11:59:23.001Z"
+    },
+    {
+      "id": "OS-006",
+      "title": "Define VYREN first vertical slice",
+      "area": "Architecture",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Reviewed first-slice contract: authenticated brand ownership is a prerequisite; bounded MongoDB task aggregate carries atomic state, evidence, attempts, and progress. No backend code yet.",
+      "evidence": "docs/agent-os/VYREN-FIRST-SLICE-ARCHITECTURE-REVIEW-v0.1.md"
+    },
+    {
+      "id": "OS-007",
+      "title": "Establish bot owner/brand scope and evidence truth",
+      "area": "Engineering",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Gate 1 prerequisite: authenticate bot ownership and brand scope; enforce target scope at tool execution and distinguish synthetic from observed evidence.",
+      "evidence": "docs/agent-os/VYREN-ONE-PERSISTENT-BOT-FOUNDATION-v0.1.md"
+    },
+    {
+      "id": "OS-008",
+      "title": "Build Instagram image-post workflow after bot foundation",
+      "area": "Engineering",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "Later gate: after one durable bot, multi-bot collaboration, computer/workspace, and bounded shared memory, build the cited Instagram image draft and per-post review flow.",
+      "evidence": "docs/agent-os/INSTAGRAM-IMAGE-POST-FIRST-SLICE-GATE-v0.1.md"
+    },
+    {
+      "id": "OS-009",
+      "title": "Test new and existing brand journeys",
+      "area": "Validation",
+      "stage": "Backlog",
+      "priority": "Medium",
+      "detail": "Verify new and existing brand onboarding, account scope, evidence quality, taste feedback, and the human publication boundary.",
+      "evidence": ""
+    },
+    {
+      "id": "OS-010",
+      "title": "Align VYREN around social-media operations",
+      "area": "Product",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Record Subham's narrower thesis, owned learning loop, platform adapter and policy gate, build sequence, frontend gap review, and open product decisions.",
+      "evidence": "docs/agent-os/VYREN-SOCIAL-MEDIA-THESIS-AND-ROADMAP-v0.1.md"
+    },
+    {
+      "id": "OS-011",
+      "title": "Set initial customer, platforms, and publication authority",
+      "area": "Product",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Confirmed: solo founder/creator first, Instagram and X first, per-post approval, Higgsfield candidate for images and reels. First end-to-end format and taste metrics remain separate decisions.",
+      "evidence": "docs/agent-os/VYREN-SOCIAL-MEDIA-THESIS-AND-ROADMAP-v0.1.md"
+    },
+    {
+      "id": "OS-012",
+      "title": "Validate platform execution routes",
+      "area": "Research",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Instagram professional-account publishing path and per-post API flow mapped from Meta's official collection; VYREN app/account eligibility unverified. X action matrix still to research.",
+      "evidence": "docs/agent-os/INSTAGRAM-IMAGE-POST-FIRST-SLICE-GATE-v0.1.md"
+    },
+    {
+      "id": "OS-014",
+      "title": "Define persistent bots, model routing, and action boundary",
+      "area": "Architecture",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Map documented Grok Bot primitives to VYREN: persistent role bots, shared brand workspace, direct/group messaging, and per-bot screens; distinguish VYREN-only model routing and action service.",
+      "evidence": "docs/agent-os/VYREN-PERSISTENT-BOTS-MODEL-ROUTING-AND-EXECUTION-v0.1.md"
+    },
+    {
+      "id": "OS-015",
+      "title": "Validate Higgsfield media gateway",
+      "area": "Research",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Official image route and async lifecycle documented. Existing provider returns synthetic success without calling Higgsfield. Account access, exact schema, cost, and live receipt remain unverified.",
+      "evidence": "docs/agent-os/INSTAGRAM-IMAGE-POST-FIRST-SLICE-GATE-v0.1.md"
+    },
+    {
+      "id": "OS-016",
+      "title": "Define quality and taste metrics for Instagram image post",
+      "area": "Product",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "First Instagram image post rubric defined: reviewer decision and edits, brand voice, source accuracy, image relevance, accessibility, then sourced outcome metrics after publication.",
+      "evidence": "docs/agent-os/INSTAGRAM-IMAGE-POST-FIRST-SLICE-GATE-v0.1.md"
+    },
+    {
+      "id": "OS-013",
+      "title": "Design the owned taste-learning loop",
+      "area": "Architecture",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "Specify versioned brand taste, reviewer feedback, outcome signals, offline evaluation, rollback, and later bounded reinforcement learning.",
+      "evidence": "docs/agent-os/VYREN-SOCIAL-MEDIA-THESIS-AND-ROADMAP-v0.1.md"
+    },
+    {
+      "id": "OS-017",
+      "title": "Replace simulated Higgsfield success with real media jobs",
+      "area": "Engineering",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "Later media gate, after the one-bot foundation: credentials are not configured; current provider returns synthetic success. Label sandbox outcomes, then implement authenticated jobs and scoped receipts.",
+      "evidence": "docs/agent-os/INSTAGRAM-IMAGE-POST-FIRST-SLICE-GATE-v0.1.md"
+    },
+    {
+      "id": "OS-018",
+      "title": "Map xAI Grok Bot design article to VYREN",
+      "area": "Research",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Read Subham's linked primary article and add its missing UX principles: bot-first roster, presence, progressive computer visibility, inline artifacts, role-scoped context, and routines.",
+      "evidence": "docs/agent-os/GROK-BOT-DESIGN-PRINCIPLES-TO-VYREN.md"
+    },
+    {
+      "id": "OS-019",
+      "title": "Design and prove one persistent bot",
+      "area": "Foundation",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Current first agenda: one durable bot identity, role/configuration, scoped memory, restart-safe task runtime, versioned skills, typed tools, capability checks, and truthful results. Design contract recorded; implementation and tests pending.",
+      "evidence": "docs/agent-os/VYREN-ONE-PERSISTENT-BOT-FOUNDATION-v0.1.md"
+    },
+    {
+      "id": "OS-020",
+      "title": "Expand to multiple persistent bots and handoffs",
+      "area": "Architecture",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "After Gate 1, add direct/group collaboration with role-scoped memory, one task owner, and no implicit authority transfer.",
+      "evidence": "docs/agent-os/VYREN-ONE-PERSISTENT-BOT-FOUNDATION-v0.1.md"
+    },
+    {
+      "id": "OS-021",
+      "title": "Add virtual computer and per-bot sessions",
+      "area": "Architecture",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "After multi-bot core, design tenant-isolated computer, separate bot screens/sessions, bounded shared workspace, credential custody, preview, takeover, and recovery.",
+      "evidence": "docs/agent-os/VYREN-ONE-PERSISTENT-BOT-FOUNDATION-v0.1.md"
+    },
+    {
+      "id": "OS-022",
+      "title": "Govern bounded shared brand memory",
+      "area": "Architecture",
+      "stage": "Backlog",
+      "priority": "High",
+      "detail": "Define promotion from bot observations, brand/project memory scope, contradiction handling, source precedence, and retrieval tests before shared-context execution.",
+      "evidence": "docs/agent-os/VYREN-ONE-PERSISTENT-BOT-FOUNDATION-v0.1.md"
+    },
+    {
+      "id": "OS-023",
+      "title": "Review VYREN customer pain and differentiation",
+      "area": "Product",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "CEO strategy review: pain is plausible, category is crowded, product-specific willingness to pay unproven. Proposed chief-of-staff wedge and validation experiment; scope changes remain pending Subham's decision.",
+      "evidence": "docs/agent-os/VYREN-CEO-PRODUCT-REVIEW-2026-10-18.md"
+    },
+    {
+      "id": "OS-024",
+      "title": "Audit authenticated owner and brand path",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Auth and brand path audited; owner-derived scope implemented in the first bot route. Focused anonymous/cross-owner tests pass; required Phase 30 baseline is 81/81.",
+      "evidence": "docs/agent-os/GATE-1-OWNER-BRAND-AUDIT-2026-10-18.md"
+    },
+    {
+      "id": "OS-025",
+      "title": "Create and retrieve one durable bot",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Owner-scoped create/get passed focused tests and live MongoDB verification. Bot identity persisted across a new Python process and MongoDB restart; other-owner reads returned 404. Phase 30 suite: 81/81.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-026",
+      "title": "Show durable bot in studio",
+      "area": "Frontend",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Team workbench shows the signed-in founder's persisted Content Producer and local draft. Browser creation, audit, and full-reload retrieval passed on 23 October. Future team features remain clearly labeled as planned.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-027",
+      "title": "Persist scoped bot memory",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Approved role memory with source, expiry, contradiction exclusion and owner/brand/bot scope passed focused tests and live MongoDB process-restart verification. Cross-owner reads returned 404.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-028",
+      "title": "Persist bot task and recover session",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Owner-scoped task and local preview survive process restart. An expired WORKING lease becomes BLOCKED, then an explicit retry uses a fresh session and completes the same task without duplicate work. Focused and live MongoDB recovery checks pass. Model-backed execution remains a later slice of OS-030.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-029",
+      "title": "Enforce versioned skills and tool capabilities",
+      "area": "Foundation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "One versioned read-only memory skill/capability checks exact scope and binding, persists allow/deny/failure audit, and labels owner-provided content as unverified external evidence. Live audit survived a MongoDB restart; negative tests pass.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-030",
+      "title": "Produce one reviewable social draft",
+      "area": "Engineering",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Signed-in Team UI produced and reloaded one local deterministic caption concept with source, route, uncertainty, audit, and unapproved state. Model-backed execution and its blocked/source-failure paths remain open.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-031",
+      "title": "Verify and review one-bot foundation",
+      "area": "Validation",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Checkpoint: 12 focused tests, Phase 30 suite 81/81, prior Next.js production build, MongoDB restart/recovery, audit, cross-owner checks, and signed-in founder-to-local-draft browser reload pass. Model-backed execution and final review remain open. Repository-wide lint has existing findings.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-032",
+      "title": "Validate founder pain with real workflows",
+      "area": "Product",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: interview script uses recent actual work, disconfirming evidence logged, four-week pilot bars preregistered. Verify: review script/evidence ledger with Subham. Parallel to Gate 1; external outreach requires authorization.",
+      "evidence": "tasks/plan.md"
+    },
+    {
+      "id": "OS-033",
+      "title": "Triage existing team stream authorization",
+      "area": "Security",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Static audit found /api/team/stream/{session_id} has no auth or owner check while replaying messages. Reproduce safely, then fix at the route boundary before reusing team rooms. Also review provisioning's forced email_verified flag. Separate from Gate 1 bot path.",
+      "evidence": "docs/agent-os/GATE-1-OWNER-BRAND-AUDIT-2026-10-18.md"
+    },
+    {
+      "id": "OS-034",
+      "title": "Triage frontend lint backlog",
+      "area": "Validation",
+      "stage": "Ready",
+      "priority": "Medium",
+      "detail": "The patched scoped brace-expansion override restores ESLint execution. Whole-repository lint reveals 95 source errors and 298 warnings; triage and fix in reviewable batches without disabling rules. Gate 1 Team files have zero errors and one existing unused-state warning.",
+      "evidence": "docs/agent-os/GATE-1-IMPLEMENTATION-2026-10-19.md"
+    },
+    {
+      "id": "OS-035",
+      "title": "Redesign Team as a one-bot colleague workbench",
+      "area": "Frontend",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Subham chose a fresh visual direction centered on one trusted Content Producer. The fixture roster and simulated attention/progress UI were removed; the new page has identity, brief-to-draft work, sourced memory, audit and truthful capability limits. Team sign-in no longer shows the global fake-work carousel. Anonymous browser visual check, type check, targeted lint and production build pass. Signed-in and mobile visual checks remain.",
+      "evidence": "docs/design/TEAM-WORKROOM.md"
+    },
+    {
+      "id": "OS-036",
+      "title": "Make Team and quick menu reachable across the dashboard",
+      "area": "Frontend",
+      "stage": "Done",
+      "priority": "Medium",
+      "detail": "Home dock now links directly to Team. The existing draggable radial menu appears on dashboard pages while Studio and Settings keep their own action handlers; Team is available as a menu shortcut. Anonymous browser checks on Home and Team passed.",
+      "evidence": "Visual-Intelligence/product/frontend/src/app/(dashboard)/layout.tsx",
+      "updatedAt": "2026-10-22T19:47:00.000Z"
+    },
+    {
+      "id": "OS-037",
+      "title": "Fix account dropdown placement in dashboard header",
+      "area": "Frontend",
+      "stage": "Done",
+      "priority": "Medium",
+      "detail": "The account menu had sidebar positioning and opened above the top header outside the viewport. It now opens below the trigger, right-aligned and viewport-bounded. Credits, Profile, and Help now resolve to working destinations; Credits selects the Usage & Compute tab. Browser checks passed on Home, Team, and Settings; scoped type and lint checks pass.",
+      "evidence": "Visual-Intelligence/product/frontend/src/components/UserPopover.tsx",
+      "updatedAt": "2026-10-22T19:55:00.000Z"
+    },
+    {
+      "id": "OS-038",
+      "title": "Stabilize Studio header and Home prompt composer",
+      "area": "Frontend",
+      "stage": "Done",
+      "priority": "Medium",
+      "detail": "Aligned the fixed Studio header with the workspace top offset and made the signed-in account control readable. Isolated radial-menu CSS from Studio's broad composer stylesheet, removed the Home prompt's rotating typewriter state and an unmount state update. Browser checks cover Studio, Home refresh, Studio-to-Home navigation, typed prompt rendering, and quick-menu settings. Type and scoped lint checks pass. Isolated production build could not finish because fonts.googleapis.com was unreachable; normal build also collided with the running dev server's .next output.",
+      "evidence": "Visual-Intelligence/product/frontend/src/components/dashboard/MeadowPromptBox.tsx",
+      "updatedAt": "2026-10-22T20:06:34.000Z"
+    },
+    {
+      "id": "OS-039",
+      "title": "Define campaign-workspace capability boundaries",
+      "area": "Architecture",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Subham approved the capability boundaries and dependency order. The map separates scope, approval, bot instances, conversations, runtime, manager, memory, computer sessions, and UI. Module specification work has begun; no multi-bot implementation has started.",
+      "evidence": "CAPABILITY-MAP-campaign-workspaces.md",
+      "updatedAt": "2026-10-23T12:40:59.000Z"
+    },
+    {
+      "id": "OS-040",
+      "title": "Specify campaign ownership and isolation",
+      "area": "Architecture",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Subham approved the campaign-scope specification. It defines the owner/tenant/brand chain, scoped campaign API, migration quarantine for ownerless records, cross-campaign tests, and compatibility questions. Implementation planning is separate and under review.",
+      "evidence": "SPEC-campaign-scope.md",
+      "updatedAt": "2026-10-23T13:03:16.000Z"
+    },
+    {
+      "id": "OS-041",
+      "title": "Plan campaign-scope implementation",
+      "area": "Architecture",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Subham approved the separate campaign-scope plan. It preserves the unfinished Gate 1 plan and orders ownerless-access hardening, scoped identity, assets and background work, archive/versioning, migration, and campaign switching. Implementation cards are prepared; no campaign-scope code has changed.",
+      "evidence": "tasks/plan-campaign-scope.md",
+      "updatedAt": "2026-10-23T13:07:21.000Z"
+    },
+    {
+      "id": "OS-042",
+      "title": "Restore focused campaign tests and capture denial cases",
+      "area": "Validation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Acceptance: a repeatable local Python command runs focused tests; new tests reproduce ownerless, foreign-owner, broken-chain and nonexistent campaign behavior without changing production data. Verify: focused test command produces an interpretable red baseline; record environment fix. Depends on approved plan. Likely files: test_campaign_scope.py and test setup only.",
+      "evidence": "docs/agent-os/CAMPAIGN-SCOPE-AUTHORIZATION-CHECKPOINT-2026-10-23.md",
+      "updatedAt": "2026-10-23T13:19:53.000Z"
+    },
+    {
+      "id": "OS-043",
+      "title": "Fail closed on legacy campaign access",
+      "area": "Security",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Acceptance: one resolver denies missing/foreign ownership on every existing campaign read, write and SSE entry point with indistinguishable 404; same-owner behavior remains. Verify: focused route tests and required Phase 30 suite 81/81. Depends on OS-042. Likely files: campaigns.py, campaign_store.py, test_campaign_scope.py.",
+      "evidence": "docs/agent-os/CAMPAIGN-SCOPE-AUTHORIZATION-CHECKPOINT-2026-10-23.md",
+      "updatedAt": "2026-10-23T13:19:53.000Z"
+    },
+    {
+      "id": "OS-044",
+      "title": "Checkpoint legacy campaign authorization",
+      "area": "Validation",
+      "stage": "Done",
+      "priority": "High",
+      "detail": "Acceptance: ownerless, foreign and missing campaign IDs have the same denial on all mounted legacy routes including SSE; no production fixture is assumed owned. Verify: targeted route inventory and focused tests plus Phase 30 81/81; save evidence. Depends on OS-043. Likely files: tests and docs/agent-os evidence record.",
+      "evidence": "docs/agent-os/CAMPAIGN-SCOPE-AUTHORIZATION-CHECKPOINT-2026-10-23.md",
+      "updatedAt": "2026-10-23T13:19:53.000Z"
+    },
+    {
+      "id": "OS-045",
+      "title": "Persist immutable campaign owner and brand scope",
+      "area": "Foundation",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Scoped model, owner/brand resolver, indexes, scoped update predicate and broken-chain denial are implemented; 18 focused and 81 Phase 30 tests pass. Fresh-process MongoDB persistence check remains because local port 27017 is not running. Acceptance still requires restart proof. Depends on OS-044.",
+      "evidence": "docs/agent-os/CAMPAIGN-SCOPE-AUTHORIZATION-CHECKPOINT-2026-10-23.md",
+      "updatedAt": "2026-10-23T13:25:09.000Z"
+    },
+    {
+      "id": "OS-046",
+      "title": "Create and list scoped campaigns safely",
+      "area": "Engineering",
+      "stage": "In Progress",
+      "priority": "High",
+      "detail": "Brand-scoped create, owner/brand-filtered list, 201 response, stable retry key, payload conflict, and unique owner/key index are implemented. 18 focused tests, Phase 30 81/81, and frontend production build pass. Cursor pagination, actual concurrent Mongo retry, and restart proof remain. Depends on OS-045.",
+      "evidence": "docs/agent-os/CAMPAIGN-SCOPE-AUTHORIZATION-CHECKPOINT-2026-10-23.md",
+      "updatedAt": "2026-10-23T13:28:58.000Z"
+    },
+    {
+      "id": "OS-047",
+      "title": "Inventory legacy campaign ownership without writing",
+      "area": "Migration",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: dry-run report separates fully scoped, owner-known/brand-unknown and ownerless records; repeat run is stable and does not expose private contents or alter assets. Verify: fixture migration tests and before/after counts. Depends on OS-045. Likely files: backend inventory script, campaign_store.py, migration tests, docs evidence.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-048",
+      "title": "Version campaign changes and make archive reversible",
+      "area": "Engineering",
+      "stage": "Ready",
+      "priority": "Medium",
+      "detail": "Acceptance: stale rename/archive updates return 409; archived campaigns stay readable but reject new work; hard delete cannot bypass scoped rules. Verify: focused state tests and Phase 30 81/81. Depends on OS-045 and OS-046. Likely files: campaign.py, campaign_store.py, campaigns.py, test_campaign_scope.py.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-049",
+      "title": "Checkpoint durable campaign API",
+      "area": "Validation",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: two owned campaigns survive process restart, foreign/brandless records are excluded, retry creates one campaign, and archive/version rules hold. Verify: focused suite, Phase 30 81/81, API response compatibility review. Depends on OS-046, OS-047 and OS-048. Likely files: tests and docs evidence.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-050",
+      "title": "Protect local campaign image delivery",
+      "area": "Security",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: local campaign images require resolved owner/brand/campaign scope; direct static-path or traversal access is denied; owner image retrieval still works. Verify: HTTP tests for owner, anonymous and foreign requests; Phase 30 81/81. Depends on OS-045 and OS-049. Likely files: main.py, asset_store.py, campaigns.py, asset-access tests.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-051",
+      "title": "Verify Supabase campaign asset privacy",
+      "area": "Security",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: inspect current Storage bucket policy and official docs; campaign material URLs no longer assume public access; owner-only retrieval works and foreign access fails. Verify: storage integration/contract test and frontend build if client changes. Depends on OS-050. Likely files: asset_store.py, campaigns.ts, storage tests, docs evidence. No live bucket change without reviewed policy.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-052",
+      "title": "Carry campaign scope through workers and streams",
+      "area": "Security",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: upload, analysis, generation, credit spend, callbacks and SSE re-check exact campaign scope; foreign or archived campaigns cannot start new work or receive another campaign's events. Verify: focused async/SSE tests and Phase 30 81/81. Depends on OS-049, OS-050 and OS-051. Likely files: campaigns.py, campaign_store.py, async boundary tests.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-053",
+      "title": "Show real scoped campaign switching",
+      "area": "Frontend",
+      "stage": "Ready",
+      "priority": "Medium",
+      "detail": "Acceptance: signed-in founder creates and switches two real campaigns and reloads each state; archived/unmigrated states are truthful and example metrics are not shown as live. Verify: type check, production build, signed-in browser run. Depends on OS-046, OS-048 and OS-052. Likely files: campaigns.ts, campaigns/page.tsx, actual Studio selector component, browser evidence.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-054",
+      "title": "Migrate only owner-confirmed legacy campaigns",
+      "area": "Migration",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: only reviewed owner-to-brand mappings are applied idempotently; IDs, creative state and assets survive; ownerless records remain quarantined. Verify: dry-run diff, repeat-run tests and owner access check. Depends on OS-047 and OS-052 plus separate review of the real mappings before any live write. Likely files: migration script, campaign_store.py, migration tests, docs evidence.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    },
+    {
+      "id": "OS-055",
+      "title": "Verify campaign isolation end to end",
+      "area": "Validation",
+      "stage": "Ready",
+      "priority": "High",
+      "detail": "Acceptance: cross-owner/brand/campaign API and asset denials, restart persistence, migration replay and archive rules all pass; two-campaign signed-in browser proof and diff review recorded. Verify: focused tests, Phase 30 81/81, frontend type/build, browser evidence. Depends on OS-053 and OS-054; no later bot module starts before this gate.",
+      "evidence": "tasks/plan-campaign-scope.md"
+    }
+  ]
+}

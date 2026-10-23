@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Home as HomeIcon,
   LayoutGrid,
@@ -9,6 +9,7 @@ import {
   Columns3,
   FolderKanban,
   Settings,
+  UsersRound,
 } from "lucide-react";
 import { Dock, DockIcon, DockItem, DockLabel } from "@/components/ui/dock";
 import { useTactileAudio } from "./useTactileAudio";
@@ -23,6 +24,7 @@ export interface DockItemData {
 export const CANONICAL_DOCK_ITEMS: DockItemData[] = [
   { id: "home", title: "Home", icon: HomeIcon, href: "/home" },
   { id: "workspace", title: "Workspace", icon: LayoutGrid, href: "/studio" },
+  { id: "team", title: "Team", icon: UsersRound, href: "/team" },
   { id: "metrics", title: "Metrics Dashboard", icon: BarChart3, href: "/activity" },
   { id: "kanban", title: "Kanban Board", icon: Columns3, href: "/kanban" },
   { id: "assets", title: "Assets", icon: FolderKanban, href: "/assets" },
@@ -37,7 +39,6 @@ export function HomeVerticalDock({
   onItemClick?: (id: string, href: string) => void;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
   const { playDockHoverSound, playFocusSound } = useTactileAudio();
 
   return (
@@ -57,6 +58,7 @@ export function HomeVerticalDock({
           return (
             <DockItem
               key={item.id}
+              label={item.title}
               onClick={() => {
                 playFocusSound();
                 if (onItemClick) {
